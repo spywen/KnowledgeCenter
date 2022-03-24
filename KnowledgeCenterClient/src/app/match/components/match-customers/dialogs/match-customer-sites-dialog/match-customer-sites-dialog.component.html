@@ -1,0 +1,93 @@
+<div class="container">
+    <h1 mat-dialog-title i18n="@@customerSites">Edit customer sites: {{customer.name.toUpperCase()}}</h1>
+    <div mat-dialog-content class="form-container">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container class="name" matColumnDef="name">
+                <th mat-header-cell i18n="@@name" class="name-column" *matHeaderCellDef mat-sort-header> Name </th>
+                <td mat-cell *matCellDef="let customerSite">
+                    <app-truncate [text]="customerSite.name | titlecase" [maxSize]="15"></app-truncate>
+                </td>
+                <td mat-footer-cell *matFooterCellDef>
+                    <form [formGroup]="newCustomerSiteForm">
+                        <mat-form-field>
+                            <input matInput placeholder="Name of the site" i18n-placeholder="@@name" formControlName="name" required/>
+                            <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+                        </mat-form-field>
+                    </form>
+                </td>
+            </ng-container>
+
+            <ng-container class="address" matColumnDef="address">
+                <th mat-header-cell i18n="@@address" class="address-column" *matHeaderCellDef mat-sort-header> Address </th>
+                <td mat-cell *matCellDef="let customerSite">
+                    <app-truncate [text]="customerSite.address" [maxSize]="60"></app-truncate>
+                </td>
+                <td mat-footer-cell *matFooterCellDef>
+                    <form [formGroup]="newCustomerSiteForm">
+                        <mat-form-field>
+                            <input matInput placeholder="Address" i18n-placeholder="@@address" formControlName="address" required/>
+                            <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+                        </mat-form-field>
+                    </form>
+                </td>
+            </ng-container>
+
+            <ng-container class="contact" matColumnDef="contact">
+                <th mat-header-cell i18n="@@contact" class="contact-column" *matHeaderCellDef mat-sort-header> Contact </th>
+                <td mat-cell *matCellDef="let customerSite">
+                    <app-truncate [text]="customerSite.contact" [maxSize]="20"></app-truncate>
+                </td>
+                <td mat-footer-cell *matFooterCellDef>
+                    <form [formGroup]="newCustomerSiteForm">
+                        <mat-form-field>
+                            <input matInput placeholder="Contact" i18n-placeholder="@@contact" formControlName="contact"/>
+                        </mat-form-field>
+                    </form>
+                </td>
+            </ng-container>
+
+            <ng-container class="actions" matColumnDef="actions">
+                <th mat-header-cell i18n="@@actions" class="actions-column" *matHeaderCellDef> Actions</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="editCustomerSite(element)" class="edit">
+                            <mat-icon>edit</mat-icon>
+                            <span i18n="@@edit">Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteCustomerSite(element)">
+                            <mat-icon>delete</mat-icon>
+                            <span i18n="@@delete">Delete</span>
+                        </button>
+                    </mat-menu>
+                </td>
+                <td mat-footer-cell *matFooterCellDef>
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                          <button mat-menu-item (click)="resetCustomerSiteForm()" matTooltip="Click to clear the form">
+                          <mat-icon>clear</mat-icon>
+                          <span i18n="@@clear">Clear</span>
+                        </button>
+                        <button mat-menu-item *ngIf="newCustomerSiteForm.valid" (click)="addCustomerSite()" matTooltip="Click to save the modifications">
+                          <mat-icon>save</mat-icon>
+                          <span i18n="@@save">Save</span>
+                        </button>
+                      </mat-menu>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row [@rowsAnimation]="" *matRowDef="let row; columns: displayedColumns;"></tr>
+            <ng-container *ngIf="tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+            </ng-container>
+        </table>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button [mat-dialog-close]="false" i18n="@@close">CLOSE</button>
+    </div>
+</div>

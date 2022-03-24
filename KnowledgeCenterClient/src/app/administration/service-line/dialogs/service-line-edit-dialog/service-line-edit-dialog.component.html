@@ -1,0 +1,32 @@
+<div class="container">
+  <h1 mat-dialog-title i18n="@@update">Update {{data.name}}</h1>
+  <form [formGroup]="serviceLineForm" class="edit-service-line">
+    <div mat-dialog-content class="form-container">
+        <mat-form-field>
+          <mat-label i18n="@@name">Name</mat-label>
+          <input formControlName="name" name="name" type="text" maxlength="100" i18n-placeholder="@@name" matInput required placeholder="Name">
+          <mat-hint></mat-hint>
+          <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+          <mat-error *ngIf="formControls('name').errors?.maxLength" i18n="@@maxLength">The name must be under 100 characters</mat-error>
+          <mat-error *ngIf="formControls('name').errors?.pattern" i18n="@@pattern">The name must be valid</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label i18n="@@description">Description</mat-label>
+          <textarea formControlName="description" name="description" type="text" maxlength="100" i18n-placeholder="@@description" matInput required placeholder="Description"></textarea>
+          <mat-error *ngIf="formControls('description').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+          <mat-error *ngIf="formControls('description').errors?.maxlength" i18n="@@maxLength">The description must be under 100 characters</mat-error>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+      <button mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="!serviceLineForm.valid"
+        (click)="onUpdateClick()"
+        i18n="@@update">
+        UPDATE
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,72 @@
+<div class="login-form page small mat-elevation-z8">
+  <form [formGroup]="loginForm" class="login full-width">
+
+    <p class="mat-title" i18n="@@login">
+      Log In
+    </p>
+    <mat-form-field>
+      <input formControlName="login"
+        name="login"
+        matInput
+        type="text"
+        i18n-placeholder="@@login"
+        placeholder="Login"
+        required
+        tabindex="1"
+        autofocus>
+    </mat-form-field>
+    <mat-form-field>
+      <input formControlName="password"
+        name="password"
+        matInput
+        type="password"
+        i18n-placeholder="@@password"
+        placeholder="Password"
+        tabindex="2"
+        required>
+    </mat-form-field>
+
+    <div class="submit-button-container">
+      <button
+        mat-stroked-button
+        class="forgot"
+        type="button"
+        routerLink="/forgot"
+        tabindex="4"
+        i18n="@@forgotPassword">
+        Forgot password?
+      </button>
+
+      <button mat-button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!loginForm.valid"
+        (click)="login()"
+        tabindex="3"
+        i18n="@@login">
+        LOG IN
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div align="end" class="signin">
+      <span i18n="@@notAlreadyRegistered">Not already registered?</span>
+      <button mat-stroked-button
+        class="sign-in"
+        mat-flat-button
+        routerLink="/signin"
+        tabindex="5"
+        i18n="@@signin">SIGN IN</button>
+    </div>
+  </form>
+</div>
+
+<ng-template #justSignedIn>
+  <span i18n="@@justSignedInMessage">Your account has been successfully created! Before login, please check your emails in order to activate your account.</span>
+</ng-template>
+
+<ng-template #accountActivated>
+  <span i18n="@@accountActivatedMessage">Your account have been successfully activated! Now, just log in!</span>
+</ng-template>

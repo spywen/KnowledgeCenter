@@ -1,0 +1,29 @@
+<div class="socket-status">
+  <button mat-icon-button
+    *ngIf="SocketActivity === SocketStatus.CONNECTING"
+    i18n-matTooltip="@@connecting"
+    matTooltip="Connecting..."
+    class="simple-icon live-data-connecting blink"><mat-icon>rss_feed</mat-icon></button>
+
+  <button mat-icon-button
+    *ngIf="SocketActivity === SocketStatus.CONNECTED"
+    i18n-matTooltip="@@connectedToLiveNotifications"
+    matTooltip="Connected to live notifications. Click to force refresh"
+    (click)="restart()"
+    class="live-data"><mat-icon>rss_feed</mat-icon></button>
+
+  <button mat-icon-button
+    *ngIf="SocketActivity === SocketStatus.RECONNECTING"
+    i18n-matTooltip="@@reconnecting"
+    matTooltip="Reconnecting..."
+    class="simple-icon live-data-reconnecting blink"><mat-icon>signal_wifi_off</mat-icon></button>
+
+  <button mat-flat-button
+    color="warn"
+    *ngIf="SocketActivity === SocketStatus.DISCONNECTED"
+    i18n-matTooltip="@@disconnectedFromLiveNotifications"
+    matTooltip="Disconnected from live notifications. Please click to reconnect."
+    class="live-data-disconnected"
+    (click)="restart()"
+    i18n="@@disconnected"><mat-icon>signal_wifi_off</mat-icon> Disconnected</button>
+</div>

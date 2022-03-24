@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <!-- MANDATORY for RazolLight in order to make it work on Azure App service !! -> -->
+    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath></OutputPath>
+    <DocumentationFile>bin\Debug\netcoreapp2.2\KnowledgeCenterServer.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath></OutputPath>
+    <DocumentationFile>bin\Release\netcoreapp2.2\KnowledgeCenterServer.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.59" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KnowledgeCenter.Common\KnowledgeCenter.Common.csproj" />
+    <ProjectReference Include="..\KnowledgeCenter.DataConnector\KnowledgeCenter.DataConnector.csproj" />
+    <ProjectReference Include="..\_CapLab\KnowledgeCenter.CapLab.Providers\KnowledgeCenter.CapLab.Providers.csproj" />
+    <ProjectReference Include="..\_Covid\KnowledgeCenter.Covid.Contracts\KnowledgeCenter.Covid.Contracts.csproj" />
+    <ProjectReference Include="..\_Covid\KnowledgeCenter.Covid.Providers\KnowledgeCenter.Covid.Providers.csproj" />
+    <ProjectReference Include="..\_Green\KnowledgeCenter.Green.Providers\KnowledgeCenter.Green.Providers.csproj" />
+    <ProjectReference Include="..\_Green\KnowledgeCenter.Green.Contracts\KnowledgeCenter.Green.Contracts.csproj" />
+    <ProjectReference Include="..\_CommonServices\KnowledgeCenter.CommonServices.Contracts\KnowledgeCenter.CommonServices.Contracts.csproj" />
+    <ProjectReference Include="..\_CommonServices\KnowledgeCenter.CommonServices\KnowledgeCenter.CommonServices.csproj" />
+    <ProjectReference Include="..\_Common\KnowledgeCenter.Common.Contracts\KnowledgeCenter.Common.Contracts.csproj" />
+    <ProjectReference Include="..\_Common\KnowledgeCenter.Common.Providers\KnowledgeCenter.Common.Providers.csproj" />
+    <ProjectReference Include="..\_Flux\KnowledgeCenter.Flux.Contracts\KnowledgeCenter.Flux.Contracts.csproj" />
+    <ProjectReference Include="..\_Flux\KnowledgeCenter.Flux.Providers\KnowledgeCenter.Flux.Providers.csproj" />
+    <ProjectReference Include="..\_Match\KnowledgeCenter.Match.Contracts\KnowledgeCenter.Match.Contracts.csproj" />
+    <ProjectReference Include="..\_Match\KnowledgeCenter.Match.Providers\KnowledgeCenter.Match.Providers.csproj" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
+</Project>

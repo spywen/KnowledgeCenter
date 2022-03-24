@@ -1,0 +1,71 @@
+@import './../../styles/variables.less';
+
+.content{
+  padding: 15px 50px;
+  max-width: 1000px;
+  margin:auto;
+
+  table, td, th{
+    border: 1px solid #333;
+  }
+
+  .reports{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    color: white;
+    .report{
+      text-align: center;
+      border: 1px solid #333;
+      border-radius: 5px;
+      background: @mainColor;
+      padding: 15px;
+      .details{
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        div{
+          padding: 0 15px;
+          p{
+            margin: 0;
+            cursor: pointer;
+          }
+          .mat-icon{
+            font-size: 40px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+          }
+          .daily{
+            font-size: 25px;
+          }
+          .total{
+            margin-top: 10px;
+            font-size: 10px;
+          }
+        }
+
+      }
+    }
+  }
+
+
+  .selectors{
+    margin-top: 20px;
+    form{
+      display: inline;
+      margin-left: 20px;
+      .mat-form-field{
+        width:400px;
+      }
+      button{
+        float: right;
+        line-height: 60px;
+      }
+      button+button{
+        margin-right: 10px;
+      }
+    }
+  }
+}

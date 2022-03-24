@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\KnowledgeCenter.Common\KnowledgeCenter.Common.csproj" />
+    <ProjectReference Include="..\..\KnowledgeCenter.DataConnector\KnowledgeCenter.DataConnector.csproj" />
+    <ProjectReference Include="..\KnowledgeCenter.Covid.Contracts\KnowledgeCenter.Covid.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

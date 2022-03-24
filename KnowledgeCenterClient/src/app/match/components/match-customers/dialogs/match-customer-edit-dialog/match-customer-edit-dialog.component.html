@@ -1,0 +1,23 @@
+<div class="container">
+    <h1 mat-dialog-title i18n="@@editCustomer">Edit {{data.name}}</h1>
+    <form [formGroup]="customerForm" class="edit-customer">
+        <div mat-dialog-content class="form-container">
+            <mat-form-field>
+                <input matInput placeholder="Name" i18n-placeholder="@@customerName" formControlName="name" required/>
+                <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+            </mat-form-field>
+        </div>
+        <div mat-dialog-actions align="end">
+            <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+            <button
+                    mat-flat-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="!customerForm.valid"
+                    (click)="onUpdateClick()"
+                    i18n="@@update">
+                UPDATE
+            </button>
+        </div>
+    </form>
+</div>

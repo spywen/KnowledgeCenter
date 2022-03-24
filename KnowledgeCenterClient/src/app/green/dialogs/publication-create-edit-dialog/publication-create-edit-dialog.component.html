@@ -1,0 +1,46 @@
+<div class="container">
+  <h1 mat-dialog-title *ngIf="!isEdition" i18n="@@createANewPublication">Create a new publication</h1>
+  <h1 mat-dialog-title *ngIf="isEdition" i18n="@@updatePublication">Update publication</h1>
+  <form [formGroup]="publicationForm" class="create-publication">
+    <div mat-dialog-content class="form-container">
+        <mat-form-field>
+            <mat-label i18n="@@publicationType">Categorie</mat-label>
+            <mat-select formControlName="publicationTypeId" required>
+              <mat-option *ngFor="let publicationType of publicationTypes" [value]="publicationType.id">{{publicationType.description}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formControls('publicationTypeId').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+        </mat-form-field>
+        <div class="messageContainer">
+          <app-kc-wysiwyg formControlName="message" maxSize="400" [breakLine]="true" autofocus tabindex="0" required></app-kc-wysiwyg>
+          <mat-error *ngIf="formControls('message').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+        </div>
+        <mat-form-field>
+          <input matInput type="datetime-local" formControlName="publicationDate" i18n-placeholder="@@publicationDate" placeholder="Publication date">
+          <mat-error *ngIf="formControls('publicationDate').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        *ngIf="!isEdition"
+        [disabled]="!publicationForm.valid"
+        (click)="confirm()"
+        i18n="@@create">
+        CREATE
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        *ngIf="isEdition"
+        [disabled]="!publicationForm.valid"
+        (click)="confirm()"
+        i18n="@@update">
+        UPDATE
+      </button>
+    </div>
+  </form>
+</div>

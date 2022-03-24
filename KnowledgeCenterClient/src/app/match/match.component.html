@@ -1,0 +1,53 @@
+<div class="container full-page-module">
+  <mat-drawer-container class="drawer-container">
+    <mat-drawer mode="side" opened>
+      <div class="side-menu">
+        <button
+                (click)="naviguateTo('/match/offers')"
+                aria-label="Switch to offers panel"
+                matTooltip="Offers"
+                matTooltipPosition="right"
+                i18n-matTooltip="@@offers"
+                [ngClass]="{'activatedButton': currentRoute === '/match/offers'}"
+        >
+          <mat-icon class="icon">receipt</mat-icon>
+        </button>
+        <button
+                (click)="naviguateTo('/match/collaborators')"
+                aria-label="Switch to collaborators panel"
+                matTooltip="Collaborators"
+                matTooltipPosition="right"
+                i18n-matTooltip="@@collaborators"
+                [ngClass]="{'activatedButton': currentRoute === '/match/collaborators'}"
+        >
+          <mat-icon class="icon">person</mat-icon>
+        </button>
+        <button
+                matRipple
+                (click)="naviguateTo('/match/customers')"
+                aria-label="Switch to customers panel"
+                matTooltip="Customers administration"
+                matTooltipPosition="right"
+                i18n-matTooltip="@@customers"
+                [ngClass]="{'activatedButton': currentRoute === '/match/dataSource'}"
+        >
+          <mat-icon class="icon">supervisor_account</mat-icon>
+        </button>
+        <button
+                matRipple
+                (click)="naviguateTo('/match/skills')"
+                aria-label="Switch to skills panel"
+                matTooltip="Skills"
+                matTooltipPosition="right"
+                i18n-matTooltip="@@skills"
+                [ngClass]="{'activatedButton': currentRoute === '/match/skills'}"
+        >
+          <mat-icon class="icon">group_work</mat-icon>
+        </button>
+      </div>
+    </mat-drawer>
+    <mat-drawer-content>
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

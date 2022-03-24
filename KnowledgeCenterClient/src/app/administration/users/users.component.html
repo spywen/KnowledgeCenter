@@ -1,0 +1,140 @@
+<div class="container full-page-module">
+  <div class="module-content">
+    <form [formGroup]="filterForm" class="filter-bar">
+      <mat-form-field appearance="outline">
+        <mat-label>Filter</mat-label>
+        <input
+          matInput
+          (keyup)="applyFilter($event.target.value)"
+          placeholder="Filter"
+          name="filter"
+          formControlName="filter"
+          i18n-placeholder="@@filter" />
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+
+      <button
+        mat-fab
+        class="bottom-right-fixed-button"
+        color="primary"
+        routerLink="/signin"
+        aria-label="Create new user">
+        <mat-icon i18n="@@CreateUser">add</mat-icon>
+      </button>
+    </form>
+
+    <span class="total-users" i18n="@@totalOfUsers">Total of users: {{dataSource.filteredData.length}}</span>
+    <table [dataSource]="dataSource" mat-table matSort>
+      <ng-container matColumnDef="lastname">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header i18n="@@LastName">
+          Last Name
+        </th>
+        <td *matCellDef="let user" mat-cell>{{ user.lastname }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="firstname">
+        <th
+          *matHeaderCellDef
+          mat-header-cell
+          mat-sort-header
+          i18n="@@FirstName">
+          First Name
+        </th>
+        <td *matCellDef="let user" mat-cell>{{ user.firstname }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="login">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header i18n="@@Login">
+          Login
+        </th>
+        <td *matCellDef="let user" mat-cell>{{ user.login }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="isActive">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header i18n="@@Status">
+          Status
+        </th>
+        <td *matCellDef="let user" mat-cell>
+          <span>
+            <mat-icon class="is-activated" [ngClass]="{ notActivated: !user.hasBeenActivated, activated: user.hasBeenActivated }" matTooltip="Account activated?" i18n-matTooltip="@@accountActivated">
+              check_box
+            </mat-icon>
+          </span>
+          <span>
+            <mat-icon class="is-active" [ngClass]="{ notActive: !user.isActive, active: user.isActive }" matTooltip="Account active?" i18n-matTooltip="@@accountActive">
+              fiber_manual_record
+            </mat-icon>
+          </span>
+
+          <span>
+            <mat-icon
+              *ngIf="user.passwordTryCount >= 5"
+              matTooltip="Password try count exceeded"
+              matTooltipPosition="above"
+              i18n-matTooltip="@@PasswordCountExceeded"
+              class="is-locked locked"
+              matBadge="{{ user.passwordTryCount }}"
+              matBadgePosition="above after">
+              lock
+            </mat-icon>
+          </span>
+          <span>
+            <mat-icon
+              *ngIf="user.passwordTryCount < 5"
+              matTooltip="Password try count not exceeded"
+              matTooltipPosition="above"
+              i18n-matTooltip="@@PasswordCountNotExceeded"
+              class="is-locked unlocked"
+              matBadge="{{ user.passwordTryCount }}"
+              matBadgePosition="above after">
+              lock_open
+              </mat-icon>
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef mat-header-cell i18n="@@Actions">Actions</th>
+        <td *matCellDef="let user" mat-cell>
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="menu"
+            aria-label="Actions menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button
+              mat-menu-item
+              (click)="editRoles(user)">
+              <mat-icon>edit</mat-icon>
+              <span i18n="@@editRole">Edit role</span>
+            </button>
+            <button
+              mat-menu-item
+              routerLink="/administration/users/{{ user.id }}/account">
+              <mat-icon>edit</mat-icon>
+              <span i18n="@@edit">Edit </span>
+            </button>
+            <button mat-menu-item (click)="delete(user)">
+              <mat-icon>delete</mat-icon>
+              <span i18n="@@delete">Delete</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr mat-row
+        [@rowsAnimation]=""
+        *matRowDef="let row; columns: displayedColumns">
+      </tr>
+    </table>
+
+    <div
+      *ngIf="dataSource.filteredData.length === 0"
+      class="no-data"
+      i18n="@@NoUserFound">
+      No user found
+    </div>
+  </div>
+</div>

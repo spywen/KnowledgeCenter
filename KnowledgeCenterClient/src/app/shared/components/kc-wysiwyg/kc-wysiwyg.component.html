@@ -1,0 +1,11 @@
+<div
+  #textarea
+  contenteditable="true"
+  (paste)="onPaste($event)"
+  (input)="change($event)"
+  (keypress)="keyPress($event)"
+  role="textarea">
+</div>
+<div class="size">
+  {{currentSize}}/{{maxSize}}
+</div>

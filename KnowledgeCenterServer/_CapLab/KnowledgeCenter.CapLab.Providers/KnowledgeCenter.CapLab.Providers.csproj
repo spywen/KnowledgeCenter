@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="2.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\KnowledgeCenter.Common\KnowledgeCenter.Common.csproj" />
+    <ProjectReference Include="..\..\KnowledgeCenter.DataConnector\KnowledgeCenter.DataConnector.csproj" />
+    <ProjectReference Include="..\KnowledgeCenter.CapLab.Contracts\KnowledgeCenter.CapLab.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

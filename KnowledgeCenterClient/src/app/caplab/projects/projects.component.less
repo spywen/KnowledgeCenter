@@ -1,0 +1,97 @@
+@import './../../../styles/variables.less';
+
+.container-grid{
+  max-width: 1200px;
+  margin: 30px auto;
+  .border{
+    padding: 0 20px;
+  }
+  .filter-bar{
+    .mat-form-field{
+      width: 96%;
+      margin: 10px;
+    }
+  }
+  .row.custom{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: auto;
+  }
+  .project {
+    display: flex;
+    flex-direction: column;
+    mat-card{
+      height: 100%;
+      margin: 10px;
+      .like-count{
+        color: gray;
+        font-size: 13px;
+        margin-left: 5px;
+        cursor: default;
+      }
+      .mat-card-title.username{
+        font-size: 16px;
+      }
+      .mat-card-subtitle .date{
+        margin: 6px 0;
+        font-size: 13px;
+      }
+      .mat-card-header.my{
+        margin-top: 60px;
+      }
+      .mat-card-content{
+        margin-bottom: 50px;
+      }
+      .mat-card-actions{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 15px 10px;
+        width: 100%;
+      }
+      .actions-menu{
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        &.my{
+          margin-top: 60px;
+        }
+      }
+      .status{
+        cursor: default;
+        width: 100%;
+        height: 40px;
+        margin: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 4px 4px 0 0;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 30px;
+        color: white;
+        &.WAITING{
+          background-color: #455a64;
+        }
+        &.VALIDATED{
+          background-color: #2e7d32;
+        }
+        &.REJECTED{
+          background-color: #d50000;
+        }
+        &.INPROGRESS{
+          background-color: #01579b;
+        }
+        &.FINISHED{
+          background-color: @mainColor;
+        }
+        .mat-icon{
+          font-size: 40px;
+          width: 40px;
+          height: 40px;
+        }
+      }
+    }
+  }
+}

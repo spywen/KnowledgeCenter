@@ -1,0 +1,70 @@
+:host{
+  margin:0;
+  padding: 0;
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+
+  button.open-side-menu{
+    box-shadow: none;
+  }
+
+  .home-link{
+    font-size: 19px;
+    font-weight: 400;
+    .kpTitle{
+      @media (max-width: 400px) {
+        display: none;
+      }
+    }
+    img{
+      height: 23px;
+    }
+  }
+  .mobile-menu-button{
+    box-shadow: none;
+    img{
+      width: 24px;
+    }
+  }
+  .active{
+    font-weight: bold !important;
+  }
+  .spacer {
+    flex: 1 1 auto;
+  }
+  .logo{
+    img{
+      width: 12px;
+      margin-right: 10px;
+    }
+  }
+  .avatar{
+    width: 30px;
+    border-radius: 100px;
+  }
+  .user-menu.visible-lg-inline-block{
+    mat-icon{
+      margin-left: 10px;
+    }
+  }
+
+  .golden-thread{
+    display: inline-block;
+    margin-left: 50px;
+    position: relative;
+    top: 2px;
+    .separator{
+      margin: 0 5px;
+    }
+    .view{
+      &.module{
+        font-weight: bold;
+      }
+      &.subpage{
+        font-weight: 300;
+      }
+    }
+  }
+}
+

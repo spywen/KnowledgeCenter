@@ -1,0 +1,38 @@
+@import './../../styles/variables';
+@import './../../styles/scroll/scrollbar';
+
+.container {
+    display: flex;
+
+    .drawer-container {
+        width: 100%;
+
+        .side-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            button {
+                background: none;
+                border: none;
+                font: inherit;
+                cursor: pointer;
+                outline: inherit;
+                width: 60px;
+                padding: 15px;
+                color: @mainColor;
+
+                mat-icon {
+                    position: relative;
+                    top: 3px;
+                }
+
+                &.activatedButton {
+                    color: @mainColor;
+                    background-color: rgba(0, 0, 0, 0.10);
+                }
+            }
+        }
+    }
+}

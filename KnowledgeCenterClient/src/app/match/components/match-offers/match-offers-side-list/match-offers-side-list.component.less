@@ -1,0 +1,54 @@
+@import '../../../../../styles/scroll/scrollbar';
+
+:host {
+  overflow: hidden;
+}
+
+form{
+  height: 100%;
+}
+
+.filters{
+  height: 80px;
+  text-align: center;
+  padding: 10px 0;
+  .keyword-filter{
+    width: 75%;
+  }
+  .additional-filters{
+    z-index: 1;
+    width: 98%;
+    background: white;
+    position: relative;
+    box-shadow: 0 12px 12px -8px #11111145;
+    overflow: hidden;
+    top: -4px;
+    padding: 0 0 10px 0;
+    .mat-form-field{
+      width: 80%;
+    }
+    .chips {
+      padding: 0 16px;
+    }
+  }
+
+}
+
+.content{
+  height: calc(100% - 100px);
+  overflow: auto;
+  .mat-list {
+    .mat-list-item {
+      cursor: pointer;
+      .avatar {
+        width: 15%;
+        border-radius: 50%;
+      }
+      div {
+        margin-left: 8px;
+        h4 { margin: 0; }
+        p { margin: 0; }
+      }
+    }
+  }
+}

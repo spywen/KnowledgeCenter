@@ -1,0 +1,81 @@
+<mat-toolbar color="primary" class="mat-elevation-z1">
+  <div class="page-links">
+
+    <button mat-mini-fab color="primary" class="open-side-menu" (click)="raiseToggleSideMenuEvent(false)">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <button mat-button
+      class="home-link visible-lg-inline-block"
+      (click)="raiseToggleSideMenuEvent(true)"
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{exact:true}">
+      <img src="assets/icons/cg.png" title="Knwoledge Center logo" />
+      &nbsp; <span class="kpTitle visible-lg-inline-block" i18n="@@portal">Knowledge Center</span>
+    </button>
+    <button  mat-mini-fab
+      class="hidden-lg mobile-menu-button"
+      color="primary"
+      (click)="raiseToggleSideMenuEvent(true)"
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{exact:true}">
+      <img src="assets/icons/cg.png" title="Kirikou portal logo" />
+    </button>
+
+    <div class="golden-thread hidden-xs">
+      <span *ngFor="let view of goldenThread; let i = index">
+        <span *ngIf="i !== 0" class="separator">/</span>
+        <span *ngIf="i === 0" class="view module">{{view.title}}</span>
+        <span *ngIf="i !== 0" class="view subpage">{{view.title}}</span>
+      </span>
+    </div>
+
+  </div>
+
+  <span class="spacer"></span>
+
+  <app-developer></app-developer>
+
+  <button mat-button
+    class="log-in visible-lg-inline-block"
+    (click)="raiseToggleSideMenuEvent(true)"
+    routerLink="/login"
+    routerLinkActive="active"
+    *ngIf="!tokenService.isAuthenticated()">
+    <span i18n="@@login">Log In</span>
+    <mat-icon>verified_user</mat-icon>
+  </button>
+  <button mat-mini-fab
+    class="mobile-log-in hidden-lg mobile-menu-button"
+    color="primary"
+    (click)="raiseToggleSideMenuEvent(true)"
+    routerLink="/login"
+    routerLinkActive="active"
+    *ngIf="!tokenService.isAuthenticated()">
+    <mat-icon>verified_user</mat-icon>
+  </button>
+
+  <button mat-button
+    (click)="raiseToggleSideMenuEvent(true)"
+    class="user-menu visible-lg-inline-block"
+    [matMenuTriggerFor]="userMenu"
+    *ngIf="tokenService.isAuthenticated()">
+    <span>{{tokenService.getTokenProfile().login}} &nbsp;</span>
+    <img class="avatar" src="{{tokenService.getGravatar(30)}}" i18n-matTooltip="@@gravatar" matTooltip="Update this image thanks to gravatar.com ;)" />
+  </button>
+  <button mat-mini-fab
+    (click)="raiseToggleSideMenuEvent(true)"
+    class="mobile-user-menu hidden-lg mobile-menu-button"
+    color="primary"
+    [matMenuTriggerFor]="userMenu"
+    *ngIf="tokenService.isAuthenticated()">
+    <img class="avatar" src="{{tokenService.getGravatar(30)}}" i18n-matTooltip="@@gravatar" matTooltip="Update this image thanks to gravatar.com ;)" />
+  </button>
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item class="logout" (click)="logout()" i18n="@@logout">Log Out</button>
+    <button mat-menu-item routerLink="/account" routerLinkActive="active" i18n="@@profile">My profile</button>
+  </mat-menu>
+
+</mat-toolbar>

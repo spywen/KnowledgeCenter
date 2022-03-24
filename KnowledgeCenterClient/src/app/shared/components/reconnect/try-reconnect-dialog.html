@@ -1,0 +1,27 @@
+<form [formGroup]="reconnectForm" class="full-width">
+  <h1 mat-dialog-title i18n="@@locked">application locked</h1>
+  <div mat-dialog-content>
+    <p>{{data.login}}, <span i18n="@@howToUnlock">please enter your password to unlock the application</span></p>
+    <mat-form-field>
+      <input matInput
+        formControlName="password"
+        name="password"
+        type="password"
+        i18n-placeholder="@@password"
+        placeholder="Password"
+        cdkFocusInitial
+        required>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button
+      mat-raised-button
+      type="submit"
+      [disabled]="!reconnectForm.valid"
+      (click)="tryLogin()"
+      i18n="@@login">
+      Log In
+    </button>
+    <button mat-button type="button" (click)="logout()" i18n="@@logout">Log out</button>
+  </div>
+</form>

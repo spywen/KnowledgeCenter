@@ -1,0 +1,78 @@
+<div class="container">
+        <h1  *ngIf="!data.collaborator" mat-dialog-title i18n="@@createCollaborator">Create new collaborator</h1>
+        <h1  *ngIf="data.collaborator" mat-dialog-title i18n="@@updateCollaborator">Update collaborator : {{data.collaborator.fullname}} </h1>
+           <form [formGroup]="createCollaboratorForm">
+            <div  mat-dialog-content class="form-container">
+            <mat-form-field>
+                <input formControlName="firstname"  matInput  i18n-placeholder="@@firstname" placeholder="Firstname" required autofocus>
+                <mat-error *ngIf="formControls('firstname').invalid" i18n="@@mandatory">This field is mandatory</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input formControlName="lastname"  matInput i18n-placeholder="@@lastname" placeholder="Lastname" required>
+                <mat-error *ngIf="formControls('lastname').invalid" i18n="@@mandatory">This field is mandatory</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput
+                       placeholder="GGID"
+                       i18n-placeholder="@@ggid"
+                       formControlName="ggid"
+                       maxlength="8"
+                       minlength="8"
+                       required />
+                <mat-error *ngIf="formControls('ggid').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+                <mat-error *ngIf="formControls('ggid').errors?.isNumeric" i18n="@@shouldBeNumber">The GGID should be a numeric value</mat-error>
+                <mat-error *ngIf="formControls('ggid').errors?.minlength || formControls('ggid').errors?.maxlength" i18n="@@ggid">
+                    The GGID should be exactly 8 characters long
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field> 
+                <input formControlName="email" matInput type="email" i18n-placeholder="@@email" placeholder="Email" required>
+                <mat-error *ngIf="formControls('email').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+                <mat-error *ngIf="formControls('email').errors?.email" i18n="@@invalidEmail">Invalid email address</mat-error>
+                <mat-error *ngIf="formControls('email').errors?.isInvalidEmail" i18n="@@portalReservedToCapgemini">Portal reserved to @capgemini.com collaborators</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input formControlName="agency" name="agency" matInput type="text" i18n-placeholder="@@agency" matInput
+                       [matAutocomplete]="autoGroup" placeholder="Agency" (focusout)="focusOutAgency($event)" required>
+                <mat-autocomplete #autoGroup="matAutocomplete" [displayWith]="displayAgencyName">
+                    <mat-optgroup *ngFor="let group of agencyGroupOptions | async" [label]="group.letter">
+                        <mat-option *ngFor="let agency of group.agencies" [value]="agency" [ngClass]="'onBlurAgencyMatOption'">
+                            {{agency.name}}
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-autocomplete>
+                <mat-error *ngIf="formControls('agency').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+            </mat-form-field>
+            <mat-form-field> 
+                <mat-label>Service Line</mat-label>
+                <mat-select formControlName="serviceLineId" name="serviceLineId" placeholder="Service Line" i18n-placeholder="@@serviceLine" >
+                    <mat-option *ngFor="let serviceLine of serviceLines" [value]="serviceLine.id">
+                        {{serviceLine.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+          
+            </div>
+            <div mat-dialog-actions align="end">
+                <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+                <button  *ngIf="!data.collaborator" mat-flat-button 
+                  color="primary"
+                  type="submit"
+                  [disabled]="!createCollaboratorForm.valid"
+                  (click)="create()"
+                  i18n="@@create">
+                  CREATE
+                </button>
+            
+                <button mat-flat-button  *ngIf="data.collaborator"
+                color="primary"
+                type="submit"
+                [disabled]="!createCollaboratorForm.valid"
+                (click)="edit()"
+                i18n="@@edit">
+                UPDATE
+              </button>
+  
+            </div>
+        </form>
+    </div>

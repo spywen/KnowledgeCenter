@@ -1,0 +1,194 @@
+<div class="container full-page-module">
+  <mat-sidenav-container class="drawer-container">
+    <mat-sidenav mode="side" #drawer opened>
+      <app-match-collaborators-side-list
+        (selectedCollaborator)="onSetSelectedCollaborator($event)"
+        [collaboratorDeleteEvent]="eventsSubject.asObservable()"
+        [collaboratorEditEvent]="editedCollaboratorSubject.asObservable()">
+      </app-match-collaborators-side-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <ng-container *ngIf="selectedCollab !== undefined">
+        <button mat-icon-button class="toggle-drawer-button mat-elevation-z3" (click)="toggleSideBar()">
+          <mat-icon [@rotateButtonAnimation]="rotatedState">chevron_left</mat-icon>
+        </button>
+        <div class="collaborators-card">
+          <mat-card class="mat-elevation-z0">
+            <mat-card-header>
+              <img mat-card-avatar src="{{ tokenService.getGravatarPerEmail(selectedCollab.email, 150) }}"
+                   alt="Avatar">
+              <div class="left-info-container">
+                <mat-card-title>{{ selectedCollab.fullname }}</mat-card-title>
+                <mat-card-subtitle>{{ selectedCollab.serviceLine ? selectedCollab.serviceLine.name + " | " : "" }}{{ selectedCollab.agency.name }}</mat-card-subtitle>
+                <mat-card-subtitle *ngIf="selectedCollab.ggid">GGID: {{ selectedCollab.ggid }}</mat-card-subtitle>
+                <mat-card-subtitle>{{ selectedCollab.email }}</mat-card-subtitle>
+              </div>
+              <div *ngIf="selectedCollab.ggid && tokenService.hasOneOfRoles(['MATCH_RM'])" class="spacer"></div>
+              <div *ngIf="selectedCollab.ggid && tokenService.hasOneOfRoles(['MATCH_RM'])">
+                <button mat-icon-button [matMenuTriggerFor]="menu" class="collaborator-options">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="onUpdate(selectedCollab)">
+                    <mat-icon>edit</mat-icon>
+                    <span i18n="@@edit">Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteCollaborator()">
+                    <mat-icon>delete</mat-icon>
+                    <span i18n="@@delete">Delete</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </mat-card-header>
+            <hr/>
+            <mat-card-content>
+              <ng-container *ngIf="!selectedCollab.ggid && tokenService.hasOneOfRoles(['MATCH_RM'])">
+                <div class="not-collab-container">
+                  <mat-icon>info</mat-icon>
+                  <p i18n="@@notCollabYetRM">This user has no GGID yet.<br>Click on the button below to enter a GGID and
+                    create a collaborator profile for this user.</p>
+                  <button mat-flat-button color="primary" i18n="@@createCollaboratorProfile"
+                          (click)="onUpdate(selectedCollab)">CREATE A COLLABORATOR PROFILE
+                  </button>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="!selectedCollab.ggid && !tokenService.hasOneOfRoles(['MATCH_RM'])">
+                <div class="not-collab-container">
+                  <mat-icon>info</mat-icon>
+                  <p i18n="@@notCollabYetNotRM">This user has no GGID yet, therefore, it isn't a collaborator.</p>
+                </div>
+              </ng-container>
+
+              <div *ngIf="selectedCollab.ggid && isFetchingCollaboratorSkills" class="progress-bar">
+                <mat-progress-bar mode="buffer"></mat-progress-bar>
+              </div>
+
+              <div *ngIf="!!selectedCollab.ggid && !isFetchingCollaboratorSkills" class="collaborators-skills-content">
+                <table mat-table [dataSource]="dataSource" matSort>
+                  <ng-container matColumnDef="serviceLine">
+                    <th mat-header-cell i18n="@@serviceLine" *matHeaderCellDef mat-sort-header> Service Line</th>
+                    <td mat-cell
+                        *matCellDef="let collaboratorSkill"> {{collaboratorSkill.skill.serviceLineId === 0 ? 'Cross Service Lines' : collaboratorSkill.skill.serviceLine.name}} </td>
+                    <td mat-footer-cell *matFooterCellDef>
+                      <form [formGroup]="newCollaboratorSkillForm">
+                        <mat-form-field>
+                          <mat-label i18n="@@chooseServiceLine">Choose a service line</mat-label>
+                          <mat-select
+                            class="serviceLine"
+                            placeholder="Choose a service line"
+                            i18n-placeholder="@@chooseServiceLine"
+                            formControlName="serviceLine"
+                            (selectionChange)="changeSelectedServiceLine($event.value)">
+                            <mat-option
+                              *ngFor="let serviceLine of serviceLines"
+                              [value]="serviceLine.id">
+                              {{serviceLine.name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </form>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="skillName">
+                    <th mat-header-cell i18n="@@skillName" *matHeaderCellDef mat-sort-header> Skill Name</th>
+                    <td mat-cell *matCellDef="let collaboratorSkill"> {{collaboratorSkill.skill.name}} </td>
+                    <td mat-footer-cell *matFooterCellDef>
+                      <form [formGroup]="newCollaboratorSkillForm">
+                        <mat-form-field>
+                          <mat-label i18n="@@chooseSkill">Choose a skill</mat-label>
+                          <mat-select
+                            id="skill"
+                            placeholder="Choose a skill"
+                            i18n-placeholder="@@chooseSkill"
+                            formControlName="skill">
+                            <mat-option *ngFor="let skill of filteredSkills" [value]="skill.id">
+                              {{skill.name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </form>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="skillLevel">
+                    <th mat-header-cell i18n="@@skillLevel" class="skill-level-column" *matHeaderCellDef
+                        mat-sort-header> Skill Level
+                    </th>
+                    <td mat-cell *matCellDef="let collaboratorSkill"> {{collaboratorSkill.skillLevel.name}} </td>
+                    <td mat-footer-cell *matFooterCellDef style="padding-top: 20px">
+                      <form [formGroup]="newCollaboratorSkillForm">
+                        <mat-form-field>
+                          <mat-label i18n="@@chooseSkillLevel">Choose a skill level</mat-label>
+                          <mat-select
+                            id="skillLevel"
+                            placeholder="Choose a skill level"
+                            i18n-placeholder="@@chooseSkillLevel"
+                            formControlName="skillLevel">
+                            <mat-option *ngFor="let skillLevel of skillLevels" [value]="skillLevel.id">
+                              {{skillLevel.name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </form>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell i18n="@@actions" class="actions-column" *matHeaderCellDef> Actions</th>
+                    <td mat-cell *matCellDef="let element">
+                      <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="editSkillLevel(element)" class="edit">
+                          <mat-icon>edit</mat-icon>
+                          <span i18n="@@edit">Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteSkill(element)">
+                          <mat-icon>delete</mat-icon>
+                          <span i18n="@@delete">Delete</span>
+                        </button>
+                      </mat-menu>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef>
+                      <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]='!newCollaboratorSkillForm.valid'>
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="resetNewCollaboratorSkillForm()"
+                                matTooltip="Clear the form">
+                          <mat-icon>clear</mat-icon>
+                          <span i18n="@@clear">Clear</span>
+                        </button>
+                        <button mat-menu-item *ngIf="newCollaboratorSkillForm.valid" (click)="addSkill()"
+                                matTooltip="Save the modifications">
+                          <mat-icon>save</mat-icon>
+                          <span i18n="@@save">Save</span>
+                        </button>
+                      </mat-menu>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="columnsDefinition"></tr>
+                  <tr mat-row [@rowsAnimation]="" *matRowDef="let row; columns: columnsDefinition;"></tr>
+                  <ng-container *ngIf="tokenService.hasOneOfRoles(['MATCH_RM'])">
+                    <tr mat-footer-row *matFooterRowDef="columnsDefinition"></tr>
+                  </ng-container>
+                </table>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!selectedCollab">
+        <div class="no-selected-collab-container">
+          <mat-icon>info</mat-icon>
+          <p i18n="@@selectCollab">Select a collaborator in the list on the left to show its info here.</p>
+        </div>
+      </ng-container>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #deleteMessage>
+  <span i18n="@@deleteCollaboratorMessage">You are about to delete this user\'s collaborator data (GGID and skills). Would you like to continue?</span>
+</ng-template>

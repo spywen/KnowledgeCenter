@@ -1,0 +1,7 @@
+<button mat-icon-button matTooltip="Share project" color="primary" i18n-matTooltip="@@shareProject" (click)="copyToClipboard(relativePath)" aria-label="Share">
+    <mat-icon>share</mat-icon>
+</button>
+
+<ng-template #linkCopied>
+    <span i18n="@@linkCopiedMessage">Link copied to the clipboard !</span>
+</ng-template>

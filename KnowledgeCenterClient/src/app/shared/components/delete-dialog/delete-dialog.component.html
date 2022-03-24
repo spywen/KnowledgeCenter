@@ -1,0 +1,22 @@
+<h1 mat-dialog-title i18n="@@warning">Warning</h1>
+<div mat-dialog-content>
+
+  <span *ngIf="!!type && !!name">
+    <ng-container *ngTemplateOutlet="deleteMessage"></ng-container>
+  </span>
+
+  <span *ngIf="!!customTemplate">
+    <ng-container
+      *ngTemplateOutlet="customTemplate">
+    </ng-container>
+  </span>
+
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+  <button mat-flat-button class="confirm" (click)="onConfirmClick()" cdkFocusInitial i18n="@@confirm" color="warn">CONFIRM</button>
+</div>
+
+<ng-template #deleteMessage>
+  <span  i18n="@@deleteMessageByDefault">You are about to delete the following {{type}}: {{name}}</span>
+</ng-template>

@@ -1,0 +1,177 @@
+@import 'variables';
+
+html, body{
+  margin: 0;
+  padding: 0;
+  background-color: @mainColor;
+  font-family: Roboto, Helvetica, sans-serif;
+  color: #333;
+  .dark-backdrop{
+    background-color: #000000bf;
+  }
+
+  .page{
+    padding: 20px;
+    background-color: white;
+    max-width: 320px;
+    margin: auto;
+    margin-top: 40px 0;
+    .small{
+      max-width: 320px;
+    }
+  }
+}
+
+.full-page-module{
+  width: 100%;
+  background-color: white;
+  &.primary{
+    background-color: @mainColor;
+  }
+  min-height: 100%;
+  position: absolute;
+
+  table{
+    width: 100%;
+  }
+
+  .module-content{
+    max-width: 800px;
+    margin: 30px auto;
+    .filter-bar {
+      margin-left: 10px;
+      margin-right: 10px;
+      mat-form-field {
+        width: 100%
+      }
+    }
+    table{
+      width: 100%;
+      .actions-column {
+        width: 2vh;
+      }
+    }
+  }
+
+  .bottom-right-absolute-button {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+  }
+
+  .bottom-right-fixed-button {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+  }
+}
+
+button.mat-custom-white {
+  background-color: white !important;
+  color: #4a148c !important;
+}
+
+mat-divider{
+  padding: 10px !important;
+  margin-top: 20px !important;
+}
+
+form.full-width mat-form-field {
+  width: 100%;
+}
+
+form button + button{
+  margin-left: 12px !important;
+}
+.mat-dialog-actions{
+  button + button{
+    margin-left: 12px !important;
+  }
+}
+
+.mat-dialog-container {
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+.snackbar{
+  &.error{
+    background-color: #b71c1c;
+  }
+  &.warning{
+    background-color: #e65100;
+  }
+  &.info{
+    background-color: #0d47a1;
+  }
+}
+
+.dark-backdrop{
+  background: rgba(0, 0, 0, 0.80) !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
+.no-data {
+  z-index: -1;
+  text-align: center;
+  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: 20px;
+  mat-icon {
+    color: @mainColor;
+    font-size: 36px;
+  }
+}
+
+.only-desktop {
+  text-align: center;
+  font-style: italic;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: 20px;
+  mat-icon {
+    margin-top: 50px;
+    color: @mainColor;
+    font-size: 36px;
+  }
+  p{
+    padding: 0 20px;
+  }
+}
+
+.break{
+  word-break: break-word;
+}
+
+.chip-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

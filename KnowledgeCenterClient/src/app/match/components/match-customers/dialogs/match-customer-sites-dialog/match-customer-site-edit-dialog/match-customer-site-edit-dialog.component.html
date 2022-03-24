@@ -1,0 +1,30 @@
+<div class="container">
+    <h1 mat-dialog-title i18n="@@editCustomerSite">Edit {{data.name}}</h1>
+    <form [formGroup]="customerSiteForm" class="edit-customer-site">
+        <div mat-dialog-content class="form-container">
+            <mat-form-field>
+                <input matInput placeholder="Name" i18n-placeholder="@@name" formControlName="name" required/>
+                <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Address" i18n-placeholder="@@address" formControlName="address" required/>
+                <mat-error *ngIf="formControls('address').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Contact" i18n-placeholder="@@contact" formControlName="contact"/>
+            </mat-form-field>
+        </div>
+        <div mat-dialog-actions align="end">
+            <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+            <button
+                    mat-flat-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="!customerSiteForm.valid"
+                    (click)="onUpdateClick()"
+                    i18n="@@update">
+                UPDATE
+            </button>
+        </div>
+    </form>
+</div>

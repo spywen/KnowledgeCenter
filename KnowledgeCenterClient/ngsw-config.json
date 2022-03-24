@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/favicons/**",
+          "/assets/icons/**",
+          "/index.html",
+          "/*.css",
+          "/*.js",
+          "/*.woff2"
+        ],
+        "urls": [
+          "https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined",
+          "https://fonts.gstatic.com/s/materialicons/v48/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2",
+          "https://fonts.gstatic.com/s/materialiconsoutlined/v14/gok-H7zzDkdnRel8-DQ6KAXJ69wP1tGnf4ZGhUce.woff2"
+        ]
+      }
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/background/**"
+        ]
+      }
+    }
+  ]
+}

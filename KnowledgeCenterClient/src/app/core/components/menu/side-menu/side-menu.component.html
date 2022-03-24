@@ -1,0 +1,128 @@
+<mat-nav-list>
+  <h3 mat-subheader i18n="@@modulesSubHeader">Modules</h3>
+
+  <mat-list-item
+    class="home"
+    (click)="route('/')"
+    [ngClass]="{'active' : currentRoute === '/'}">
+    <mat-icon mat-list-icon>home</mat-icon>
+    <p mat-line class="title">Home</p>
+  </mat-list-item>
+
+  <mat-expansion-panel
+    class="administration"
+    [ngClass]="{'expension-active' : currentRoute.startsWith('/administration')}"
+    [expanded]="currentRoute.startsWith('/administration')"
+    *ngIf="tokenService.hasOneOfRoles(['ADMIN'])">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>settings_application</mat-icon> <span class="expension-title">Administration</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-list-item (click)="route('/administration/agencies')" [ngClass]="{'active' : currentRoute.startsWith('/administration/agencies')}">
+      <p mat-line class="title">Agencies</p>
+    </mat-list-item>
+
+    <mat-list-item (click)="route('/administration/service-lines')" [ngClass]="{'active' : currentRoute.startsWith('/administration/service-lines')}">
+      <p mat-line class="title">Service Lines</p>
+    </mat-list-item>
+
+    <mat-list-item (click)="route('/administration/users')" [ngClass]="{'active' : currentRoute.startsWith('/administration/users')}">
+      <p mat-line class="title">Users</p>
+    </mat-list-item>
+
+  </mat-expansion-panel>
+
+  <mat-list-item
+    class="why-stay-home"
+    (click)="route('/whystayhome')"
+    [ngClass]="{'active' : currentRoute.startsWith('/whystayhome')}">
+    <mat-icon mat-list-icon>healing</mat-icon>
+    <p mat-line class="title">Why stay at home?</p>
+  </mat-list-item>
+
+  <mat-list-item
+    class="match"
+    (click)="route('/match/offers')"
+    [ngClass]="{'active' : currentRoute.startsWith('/match')}"
+    *ngIf="tokenService.hasOneOfRoles(['MATCH_USER'])">
+    <mat-icon mat-list-icon>search</mat-icon>
+    <p mat-line class="title">Match</p>
+  </mat-list-item>
+
+  <h3 mat-subheader *ngIf="tokenService.hasOneOfRoles(['NICE_COLAB'])" i18n="@@modulesSubHeader">Nice modules</h3>
+
+  <mat-list-item
+    class="flux"
+    (click)="route('/flux')"
+    [ngClass]="{'active' : currentRoute.startsWith('/flux')}">
+    <mat-icon mat-list-icon>rss_feed</mat-icon>
+    <p mat-line class="title">Flux</p>
+  </mat-list-item>
+
+  <mat-expansion-panel
+    class="caplab"
+    [ngClass]="{'expension-active' : currentRoute.startsWith('/caplab')}"
+    [expanded]="currentRoute.startsWith('/caplab')">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>wb_incandescent</mat-icon> <span class="expension-title">CapLab</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-list-item (click)="route('/caplab/projects/proposals')" [ngClass]="{'active' : currentRoute.startsWith('/caplab/projects/proposals')}">
+      <p mat-line class="title">Projects</p>
+    </mat-list-item>
+
+    <mat-list-item (click)="route('/caplab/projects/administration')"
+      [ngClass]="{'active' : currentRoute.startsWith('/caplab/projects/administration')}"
+      *ngIf="tokenService.hasOneOfRoles(['CAPLAB_ADMIN'])">
+      <p mat-line class="title">Projects administration</p>
+    </mat-list-item>
+
+  </mat-expansion-panel>
+  <mat-expansion-panel
+    class="green"
+    [ngClass]="{'expension-active' : currentRoute.startsWith('/green')}"
+    [expanded]="currentRoute.startsWith('/green')">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>emoji_nature</mat-icon> <span class="expension-title">Green</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-list-item (click)="route('/green/ardoise')" [ngClass]="{'active' : currentRoute.startsWith('/green/ardoise')}">
+      <p mat-line class="title">Ardoise de la semaine</p>
+    </mat-list-item>
+
+    <mat-list-item (click)="route('/green/administration')"
+      [ngClass]="{'active' : currentRoute.startsWith('/green/administration')}"
+      *ngIf="tokenService.hasOneOfRoles(['GREEN_ADMIN'])">
+      <p mat-line class="title">Administration</p>
+    </mat-list-item>
+</mat-expansion-panel>
+
+  <footer>
+    <button mat-icon-button class="credits" color="primary" (click)="openCredits()">
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <div>
+      <span i18n="@@footer">Knowledge Center 2019</span>
+    </div>
+    <div>
+      <span i18n="@@version">Version</span> {{applicationVersion}}
+    </div>
+    <div class="report">
+      <a mat-stroked-button color="warn"
+        i18n="Report an issue message side menu"
+        href="https://forms.gle/7xeizCYPfAKgt2Ph8"
+        target="_blank"
+        matTooltip="Fuck, another bug!"
+        matTooltipShowDelay="1500">
+        ****, another bug!!
+      </a>
+    </div>
+  </footer>
+
+</mat-nav-list>

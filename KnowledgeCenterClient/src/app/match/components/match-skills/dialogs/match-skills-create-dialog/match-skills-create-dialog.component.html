@@ -1,0 +1,38 @@
+<h1 mat-dialog-title i18n="@@addASkill">Add a skill</h1>
+<div mat-dialog-content>
+  <form [formGroup]="skillForm">
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Name"
+        i18n-placeholder="@@skillName"
+        formControlName="name"
+        required
+        maxlength="50"
+      />
+      <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label i18n="@@serviceLine">Service Line</mat-label>
+      <mat-select formControlName="serviceLineId">
+        <mat-option *ngFor="let serviceLine of serviceLines" [value]="serviceLine.id">
+          {{serviceLine.name}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="submit"
+    [disabled]="!skillForm.valid"
+    (click)="onAddClick()"
+    i18n="@@add">
+    ADD
+  </button>
+</div>

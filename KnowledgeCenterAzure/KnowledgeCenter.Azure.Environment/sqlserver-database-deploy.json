@@ -1,0 +1,37 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "defaultValue": "",
+        "description": "The name of the SQL logical server."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the SQL database"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2017-03-01-preview",
+      "name": "[concat(parameters('serverName'), '/', parameters('databaseName'))]",
+      "location": "westeurope",
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "kind": "v12.0,user",
+      "properties": {
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+        "zoneRedundant": false
+      }
+    }
+  ]
+}

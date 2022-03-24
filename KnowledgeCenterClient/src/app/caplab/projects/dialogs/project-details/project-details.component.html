@@ -1,0 +1,45 @@
+<div class="container break">
+    <h1 mat-dialog-title>{{project.title}}</h1>
+    <div mat-dialog-content class="form-container">
+      <mat-chip-list>
+        <mat-chip *ngFor="let tag of project.tags" color="primary" selected>{{tag.description}}</mat-chip>
+      </mat-chip-list>
+
+      <div class="rating">
+        <div><app-star-rating [rate]="project.likeAverageRate" size="L"></app-star-rating></div>
+        <p><span class="like-count">(<span>{{project.likeAverageRate | number : '1.1-1'}}</span>), {{project.likeCount}} votes</span></p>
+      </div>
+
+      <div class="short-description">{{project.shortDescription}}</div>
+
+      <div [innerHTML]="project.description"></div>
+
+      <div class="meta">
+        {{project.creationDate | date:'dd/MM/yyyy'}}, {{project.user.firstname}} {{project.user.lastname | uppercase}}
+        <br/>
+        <span class="approver" *ngIf="project.approverFullName" i18n="@@rejectedBy"><mat-icon>offline_pin</mat-icon> Approver: {{project.approverFullName | uppercase}}</span>
+      </div>
+    </div>
+    <div mat-dialog-actions align="end">
+      <div *ngIf="tokenService.hasOneOfRoles(['CAPLAB_ADMIN'])">
+        <form [formGroup]="statusForm" class="status-form">
+          <mat-form-field>
+            <mat-label i18n="@@status">Status</mat-label>
+            <mat-select formControlName="statusId">
+              <mat-option *ngFor="let status of projectStatuses" [value]="status.id">{{status.description}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="!statusForm.valid"
+            (click)="save()"
+            i18n="@@saveStatus">
+            SAVE STATUS
+          </button>
+        </form>
+      </div>
+      <button mat-button class="close" [mat-dialog-close]="false" i18n="@@close">CLOSE</button>
+    </div>
+  </div>

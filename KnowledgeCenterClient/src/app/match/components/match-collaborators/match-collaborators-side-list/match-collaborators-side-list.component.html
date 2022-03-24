@@ -1,0 +1,85 @@
+<form class="filters-form" [formGroup]="filtersForm">
+
+  <div class="filters">
+    <mat-form-field appearance="outline" class="keyword-filter">
+      <mat-label i18n="@searchByNameOrGgid">Search (name, GGID)</mat-label>
+      <input matInput
+              (keyup)="onSearchFieldValueChanged($event)"
+              name="search"
+              formControlName="searchField">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <button mat-icon-button matTooltip="Show filters" i18n-matTooltip="@@showFilters" (click)="switchAdditionalFiltersVisibility()">
+      <mat-icon [matBadge]="appliedFilters.length" matBadgeColor="primary">filter_list</mat-icon>
+    </button>
+
+    <div class="additional-filters" [@revealAdditionalFiltersAnimation]="additionalFiltersAnimationState">
+      <div class="chips">
+        <mat-chip-list>
+          <mat-chip
+            color="primary"
+            selected
+            *ngFor="let filter of appliedFilters"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="removeFilter(filter)">
+            <span class="chip-text">{{filter.displayedName}}</span>
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+
+      <mat-form-field *ngIf="filtersForm.controls.site.value === ''">
+        <mat-label i18n="@@site">Site</mat-label>
+        <mat-select id="site" formControlName="site" placeholder="Site" (selectionChange)="onApplyNewFilter($event)">
+          <mat-option *ngFor="let site of sites | orderByString:'name'" [value]="site">
+            {{site.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="filtersForm.controls.serviceLine.value === ''">
+        <mat-label i18n="@@serviceLine">Service Line</mat-label>
+        <mat-select id="serviceLine" formControlName="serviceLine" placeholder="Service Line" (selectionChange)="onApplyNewFilter($event)">
+          <mat-option *ngFor="let serviceLine of serviceLines | orderByString:'name'" [value]="serviceLine">
+            {{serviceLine.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="content"
+      infiniteScroll
+      [infiniteScrollDistance]="1"
+      (scrolled)="onScrollDown()"
+      [scrollWindow]="false">
+    <mat-list [ngClass]="isOpened ? 'resize-list' : ''">
+      <ng-container *ngFor="let collaborator of filteredCollaborators; let collaboratorIndex = index">
+        <mat-list-item
+          matRipple
+          (click)="onClickCollaborator(collaborator, collaboratorIndex)"
+          [ngStyle]="{'background-color': collaboratorIndex === activeCollaboratorIndex ? 'rgba(0, 0, 0, 0.10)' : null}">
+          <img class="avatar" src="{{ tokenService.getGravatarPerEmail(collaborator.email, 150) }}"
+                matTooltip="Gravatar.com image"/>
+          <div>
+            <h4 mat-line>{{ collaborator.firstname }} {{ collaborator.lastname | uppercase }}</h4>
+            <p mat-line>{{ collaborator.agency.name }}</p>
+            <p mat-line>{{ collaborator.serviceLine?.name }}</p>
+          </div>
+        </mat-list-item>
+      </ng-container>
+    </mat-list>
+
+    <div
+      *ngIf="filteredCollaborators?.length === 0"
+      class="no-data"
+      i18n="@@NoCollaboratorFound">No collaborator found</div>
+
+  </div>
+
+</form>
+
+<button mat-fab class="bottom-right-absolute-button" color="primary" aria-label="Add a collaborator" (click)="onCreate()"  *ngIf="tokenService.hasOneOfRoles(['MATCH_RM'])">
+  <mat-icon  i18n="@@CreateCollaborator">add</mat-icon>
+</button>

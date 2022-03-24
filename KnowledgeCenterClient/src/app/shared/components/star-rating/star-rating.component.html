@@ -1,0 +1,11 @@
+<div class="box noselect" [ngClass]="{'size-small': size == 'S', 'size-medium': size == 'M', 'size-large': size == 'L'}">
+  <mat-icon
+    *ngFor="let star of stars"
+    class="star"
+    [ngClass]="{'selected': star.isSelected(), 'hover': star.isHover, 'editable': isEditable}"
+    (mouseenter) ="enter(star)"
+    (mouseleave) ="leave()"
+    (click)="click(star)">
+    {{star.starKind()}}
+  </mat-icon>
+</div>

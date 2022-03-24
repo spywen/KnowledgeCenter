@@ -1,0 +1,32 @@
+<div class="container">
+  <h1 mat-dialog-title i18n="@@editRolesOf">Edit roles of {{data?.fullname}}</h1>
+  <form [formGroup]="rolesForm" class="full-width">
+    <div mat-dialog-content class="form-container">
+      <ng-container formArrayName="roles">
+        <div *ngFor="let role of roles; let i=index" class="role">
+          <mat-checkbox
+            color="primary"
+            [formControlName]="i">
+            {{role.description}}
+          </mat-checkbox>
+        </div>
+      </ng-container>
+    </div>
+
+    <div mat-dialog-actions align="end">
+      <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        (click)="editRoles()"
+        i18n="@@save">
+        SAVE
+      </button>
+    </div>
+  </form>
+</div>
+
+<ng-template #roleUpdated>
+  <span i18n="@@roleUpdatedMessage">{{data?.fullname}}'s roles updated successfully</span>
+</ng-template>

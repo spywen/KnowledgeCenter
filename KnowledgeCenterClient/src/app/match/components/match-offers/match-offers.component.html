@@ -1,0 +1,688 @@
+<div class="container full-page-module">
+  <mat-sidenav-container class="drawer-container">
+    <mat-sidenav mode="side" #drawer opened>
+      <app-match-offers-side-list
+        (selectedOffer)="onSetSelectedOffer($event)"
+        (newCustomerOffer)="onNewCustomerOffer()"
+        [customerOfferDeleteEvent]="deletedOfferSubject.asObservable()"
+        [customerOfferEditEvent]="editedOfferSubject.asObservable()"
+        [customerOfferAddEvent]="addedOfferSubject.asObservable()"
+        [customerOfferInfoModificationEvent]="customerOfferInfoModificationSubject.asObservable()"
+        [customerOfferRequiredSkillsModificationEvent]="customerOfferRequiredSkillsModificationSubject.asObservable()">
+      </app-match-offers-side-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <ng-container *ngIf="!selectedOffer">
+        <div class="no-selected-offer-container">
+          <mat-icon>info</mat-icon>
+          <p i18n="@@selectOffer">Select an offer in the list on the left to show its info here.</p>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="selectedOffer !== undefined">
+        <button mat-icon-button class="toggle-drawer-button mat-elevation-z3" (click)="toggleSideBar()">
+          <mat-icon [@rotateButtonAnimation]="rotatedState">chevron_left</mat-icon>
+        </button>
+
+        <mat-tab-group
+          [animationDuration]="'0ms'"
+          [selectedIndex]="selectedTab.value"
+          (selectedIndexChange)="onChangeSelectedTab($event)"
+        >
+          <mat-tab *ngFor="let tab of tabs; let index = index">
+
+            <ng-container *ngIf="index === 0"> <!--onglet principal (infos de la fiche de poste)-->
+              <ng-template mat-tab-label>
+                <div>{{tab}}</div>
+              </ng-template>
+              <div class="offer-card-container">
+                <mat-card [ngStyle]="{'margin-bottom': isNewOffer ? '56px' : '0px'}">
+                  <div class="edit-offer-button-container" *ngIf="!isNewOffer && tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                    <div></div>
+                    <button
+                      mat-raised-button
+                      color="primary"
+                      i18n="@@saveChanges"
+                      (click)="onSaveCustomerOfferChanges()"
+                      [disabled]="!offerFormChanged"
+                    >
+                      SAVE CHANGES
+                    </button>
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="onDeleteCustomerOffer()">
+                        <mat-icon>delete</mat-icon>
+                        <span i18n="@@delete">Delete</span>
+                      </button>
+                    </mat-menu>
+                  </div>
+                  <div class="offer-card">
+                    <mat-card class="mat-elevation-z0">
+                      <div class="offer-card-status-title-container">
+                        <mat-card-title>
+                          <button
+                            mat-icon-button
+                            [disabled]="!isNewOffer"
+                            *ngIf="selectedOffer.customerOfferStatus.id === 1"
+                            [matMenuTriggerFor]="statusMenu"
+                          >
+                            <mat-icon matTooltip="The mission is opened" i18n-matTooltip="@@missionOpened">lock_open
+                            </mat-icon>
+                          </button>
+                          <button
+                            mat-icon-button
+                            [disabled]="!isNewOffer"
+                            *ngIf="selectedOffer.customerOfferStatus.id === 2"
+                            [matMenuTriggerFor]="statusMenu"
+                          >
+                            <mat-icon matTooltip="The mission is done" i18n-matTooltip="@@missionDone">lock</mat-icon>
+                          </button>
+                          <button
+                            mat-icon-button
+                            [disabled]="!isNewOffer"
+                            *ngIf="selectedOffer.customerOfferStatus.id === 3"
+                            [matMenuTriggerFor]="statusMenu"
+                          >
+                            <mat-icon matTooltip="The mission is sourced" i18n-matTooltip="@@missionSourced">
+                              flash_on
+                            </mat-icon>
+                          </button>
+                          <mat-menu #statusMenu="matMenu">
+                            <button mat-menu-item (click)="onSetCustomerOfferStatus('OPEN')">
+                              <mat-icon>lock_open</mat-icon>
+                              <span i18n="@@missionOpened">The mission is opened</span>
+                            </button>
+                            <button mat-menu-item (click)="onSetCustomerOfferStatus('CLOSED')">
+                              <mat-icon>lock</mat-icon>
+                              <span i18n="@@missionDone">The mission is done</span>
+                            </button>
+                            <button mat-menu-item (click)="onSetCustomerOfferStatus('SOURCED')">
+                              <mat-icon>flash_on</mat-icon>
+                              <span i18n="@@missionSourced">The mission is sourced</span>
+                            </button>
+                          </mat-menu>
+                          <span *ngIf="!isNewOffer">Offer n°{{selectedOffer.id}}</span>
+                          <span *ngIf="isNewOffer">New offer</span>
+                        </mat-card-title>
+                      </div>
+                      <mat-card-content>
+                        <form [formGroup]="offerForm">
+                          <div class="offer-fields">
+                            <mat-form-field color="primary">
+                              <input
+                                matInput
+                                id="creationDate"
+                                [matDatepicker]="creationDatePicker"
+                                placeholder="Creation date"
+                                i18n-placeholder="@@creationDate"
+                                formControlName="offerCreationDate"
+                                required
+                              >
+                              <mat-datepicker-toggle matSuffix [for]="creationDatePicker"></mat-datepicker-toggle>
+                              <mat-datepicker #creationDatePicker color="primary"></mat-datepicker>
+                            </mat-form-field>
+
+                            <mat-form-field>
+                              <input
+                                matInput
+                                formControlName="offerRequester"
+                                placeholder="Requester"
+                                i18n-placeholder="@@requester"
+                              >
+                            </mat-form-field>
+
+                            <mat-form-field>
+                              <mat-label i18n="@@customer">Customer</mat-label>
+                              <mat-select
+                                id="customer"
+                                placeholder="Customer"
+                                i18n-placeholder="@@customer"
+                                formControlName="offerCustomer"
+                                (selectionChange)="setCustomerSites($event.value)"
+                                required
+                              >
+                                <mat-option *ngFor="let customer of customers | orderByString:'name'"
+                                            [value]="customer.id">
+                                  {{customer.name}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field>
+                              <mat-label i18n="@@customerSite" *ngIf="!isFetchingCustomerSites">Customer site
+                              </mat-label>
+                              <mat-select
+                                id="customerSite"
+                                placeholder="Customer site"
+                                i18n-placeholder="@@customerSite"
+                                formControlName="offerSite"
+                                [disabled]="isFetchingCustomerSites || !tokenService.hasOneOfRoles(['MATCH_CAM'])"
+                                required
+                              >
+                                <mat-option *ngFor="let site of customerSites" [value]="site.id">
+                                  {{ site.name }}
+                                </mat-option>
+                              </mat-select>
+                              <mat-label *ngIf="isFetchingCustomerSites">
+                                <div class="select-placeholder-container">
+                                  <span>Loading...</span>
+                                  <mat-spinner class="spinner" diameter="20"></mat-spinner>
+                                </div>
+                              </mat-label>
+                            </mat-form-field>
+                          </div>
+                        </form>
+                      </mat-card-content>
+                      <mat-card-title i18n="@@followedBy">Followed by</mat-card-title>
+                      <mat-card-content>
+                        <form [formGroup]="offerForm">
+                          <div class="followed-by-fields">
+                            <mat-form-field>
+                              <mat-label i18n="@@customerAccountManagerSite">Customer account manager site</mat-label>
+                              <mat-select
+                                id="customerAccountManagerSite"
+                                placeholder="Customer account manager site"
+                                i18n-placeholder="@@customerAccountManagerSite"
+                                formControlName="offerCustomerAccountManagerSite"
+                                (selectionChange)="setCustomerAccountManagers($event.value)"
+                                required
+                              >
+                                <mat-option *ngFor="let agency of agencies" [value]="agency.id">
+                                  {{ agency.name }}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field>
+                              <mat-label i18n="@@customerAccountManager" *ngIf="!isFetchingCustomerAccountManagers">
+                                Customer account manager
+                              </mat-label>
+                              <mat-select
+                                id="customerAccountManager"
+                                placeholder="Customer account manager"
+                                i18n-placeholder="@@customerAccountManager"
+                                formControlName="offerCustomerAccountManager"
+                                [disabled]="isFetchingCustomerAccountManagers || !tokenService.hasOneOfRoles(['MATCH_CAM'])"
+                                required
+                              >
+                                <mat-option *ngFor="let collaborator of customerAccountManagers"
+                                            [value]="collaborator.id">
+                                  {{ collaborator.fullname }}
+                                </mat-option>
+                              </mat-select>
+                              <mat-label *ngIf="isFetchingCustomerAccountManagers">
+                                <div class="select-placeholder-container">
+                                  <span>Loading...</span>
+                                  <mat-spinner diameter="20" color="primary"></mat-spinner>
+                                </div>
+                              </mat-label>
+                            </mat-form-field>
+                          </div>
+                        </form>
+                      </mat-card-content>
+                    </mat-card>
+                    <mat-card class="mat-elevation-z0">
+                      <mat-card-title class="mission-title" i18n="@@mission">Mission</mat-card-title>
+                      <mat-card-content>
+                        <form [formGroup]="offerForm">
+                          <div class="mission-fields">
+                            <mat-form-field>
+                              <input matInput formControlName="offerTitle" placeholder="Title"
+                                     i18n-placeholder="@@title" required>
+                            </mat-form-field>
+
+                            <mat-form-field>
+                            <textarea matInput formControlName="offerDescription" placeholder="Description"
+                                      i18n-placeholder="@@description">
+                            </textarea>
+                            </mat-form-field>
+                            <div class="mission-dates-requirements-container">
+                              <div class="mission-dates">
+                                <mat-form-field color="primary">
+                                  <input
+                                    matInput
+                                    id="beginningDate"
+                                    [matDatepicker]="beginningDatePicker"
+                                    placeholder="Beginning date"
+                                    i18n-placeholder="@@beginningDate"
+                                    formControlName="offerBeginningDate"
+                                    required
+                                  >
+                                  <mat-datepicker-toggle matSuffix [for]="beginningDatePicker"></mat-datepicker-toggle>
+                                  <mat-datepicker #beginningDatePicker color=""></mat-datepicker>
+                                </mat-form-field>
+
+                                <mat-form-field color="primary">
+                                  <input
+                                    matInput
+                                    id="endingDate"
+                                    [matDatepicker]="endingDatePicker"
+                                    placeholder="Ending date"
+                                    i18n-placeholder="@@endingDate"
+                                    formControlName="offerEndingDate"
+                                    required
+                                  >
+                                  <mat-datepicker-toggle matSuffix [for]="endingDatePicker"></mat-datepicker-toggle>
+                                  <mat-datepicker #endingDatePicker color="primary"></mat-datepicker>
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </mat-card-content>
+                    </mat-card>
+                  </div>
+                  <div class="mission-requirements">
+                    <form [formGroup]="offerForm">
+                      <mat-slide-toggle color="primary" formControlName="offerMobilityRequired">
+                        Mobility required
+                      </mat-slide-toggle>
+                      <mat-slide-toggle color="primary" formControlName="offerOnSite">
+                        On site
+                      </mat-slide-toggle>
+                      <mat-slide-toggle color="primary" formControlName="offerWorkFromHomeAllowed">
+                        Work from home allowed
+                      </mat-slide-toggle>
+                    </form>
+                  </div>
+                  <div class="create-offer-button-container" *ngIf="isNewOffer">
+                    <div></div>
+                    <button
+                      mat-raised-button
+                      color="primary"
+                      i18n="@@createCustomerOffer"
+                      (click)="onCreateCustomerOffer()"
+                      [disabled]="!offerForm.valid"
+                    >
+                      CREATE CUSTOMER OFFER
+                    </button>
+                  </div>
+                </mat-card>
+                <div class="skills-container" *ngIf="!isNewOffer">
+                  <mat-card>
+                    <div class="edit-offer-button-container" *ngIf="tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                      <div></div>
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        i18n="@@saveOrder"
+                        (click)="onSaveCustomerOfferSkillsNewOrder()"
+                        [disabled]="!customerOfferSkillsOrderChanged"
+                      >
+                        SAVE ORDER
+                      </button>
+                    </div>
+                    <mat-card-title i18n="@@requiredSkills">Required skills</mat-card-title>
+                    <div *ngIf="isFetchingOfferSkills" class="progress-bar">
+                      <mat-progress-bar mode="buffer"></mat-progress-bar>
+                    </div>
+                    <div *ngIf="!isFetchingOfferSkills">
+                      <mat-table
+                          [dataSource]="dataSource"
+                          cdkDropList
+                          [cdkDropListData]="dataSource.data"
+                          (cdkDropListDropped)="drop($event)"
+                          id="skills-table"
+                      >
+
+                        <!-- ================= Table body ================= -->
+                        <ng-container matColumnDef="skillPriority">
+                          <mat-header-cell i18n="@@skillPriority" *matHeaderCellDef>Skill Priority</mat-header-cell>
+                          <mat-cell mat-cell *matCellDef="let customerOfferSkill">
+                            {{customerOfferSkill.skillPriority}}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="serviceLine">
+                          <mat-header-cell i18n="@@serviceLine" *matHeaderCellDef>Service Line</mat-header-cell>
+                          <mat-cell mat-cell *matCellDef="let customerOfferSkill">
+                            {{customerOfferSkill.skill.serviceLineId === 0 ? 'Cross Service Lines' : customerOfferSkill.skill.serviceLine.name}}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="skillName">
+                          <mat-header-cell i18n="@@skillName" *matHeaderCellDef>Skill Name</mat-header-cell>
+                          <mat-cell mat-cell *matCellDef="let customerOfferSkill">
+                            {{customerOfferSkill.skill.name}}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="skillLevel">
+                          <mat-header-cell i18n="@@skillLevel" class="skill-level-column" *matHeaderCellDef> Skill
+                            Level
+                          </mat-header-cell>
+                          <mat-cell mat-cell *matCellDef="let customerOfferSkill">
+                            {{customerOfferSkill.skillLevel.name}}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="actions">
+                          <mat-header-cell
+                            i18n="@@actions"
+                            class="actions-column"
+                            [ngClass]="{'flex-none': tokenService.hasOneOfRoles(['MATCH_CAM'])}"
+                            *matHeaderCellDef
+                          >
+                            Actions
+                          </mat-header-cell>
+                          <mat-cell
+                            mat-cell
+                            [ngClass]="{'flex-none': tokenService.hasOneOfRoles(['MATCH_CAM'])}"
+                            *matCellDef="let element"
+                          >
+                            <button mat-icon-button [matMenuTriggerFor]="menu">
+                              <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                              <button
+                                mat-menu-item
+                                class="edit"
+                                (click)="onEditCustomerOfferSkillLevel(element)"
+                              >
+                                <mat-icon>edit</mat-icon>
+                                <span i18n="@@edit">Edit</span>
+                              </button>
+                              <button mat-menu-item (click)="onDeleteCustomerOfferSkill(element)">
+                                <mat-icon>delete</mat-icon>
+                                <span i18n="@@delete">Delete</span>
+                              </button>
+                            </mat-menu>
+                          </mat-cell>
+                        </ng-container>
+
+                        <!-- ================= Table footer ================= -->
+                        <ng-container matColumnDef="serviceLineSelector">
+                          <mat-footer-cell *matFooterCellDef>
+                            <form [formGroup]="newCustomerOfferSkillForm">
+                              <mat-form-field>
+                                <mat-label i18n="@@chooseServiceLine">Choose a service line</mat-label>
+                                <mat-select
+                                  placeholder="Choose a service line"
+                                  i18n-placeholder="@@chooseServiceLine"
+                                  formControlName="skillServiceLine"
+                                  (selectionChange)="onChangeSelectedServiceLine($event.value)"
+                                >
+                                  <mat-option *ngFor="let serviceLine of serviceLines" [value]="serviceLine.id">
+                                    {{serviceLine.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </form>
+                          </mat-footer-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="skillSelector">
+                          <mat-footer-cell *matFooterCellDef>
+                            <form [formGroup]="newCustomerOfferSkillForm">
+                              <mat-form-field>
+                                <mat-label i18n="@@chooseSkill">Choose a skill</mat-label>
+                                <mat-select placeholder="Choose a skill" i18n-placeholder="@@chooseSkill"
+                                            formControlName="skill">
+                                  <mat-option *ngFor="let skill of filteredSkills" [value]="skill.id">
+                                    {{skill.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </form>
+                          </mat-footer-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="skillLevelSelector">
+                          <mat-footer-cell *matFooterCellDef>
+                            <form [formGroup]="newCustomerOfferSkillForm">
+                              <mat-form-field>
+                                <mat-label i18n="@@chooseSkillLevel">Choose a skill level</mat-label>
+                                <mat-select placeholder="Choose a skill level" i18n-placeholder="@@chooseSkillLevel"
+                                            formControlName="skillLevel">
+                                  <mat-option *ngFor="let skillLevel of skillLevels" [value]="skillLevel.id">
+                                    {{skillLevel.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </form>
+                          </mat-footer-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="skillActions">
+                          <mat-footer-cell *matFooterCellDef>
+                            <button mat-icon-button [matMenuTriggerFor]="menu"
+                                    [disabled]="!newCustomerOfferSkillForm.valid">
+                              <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                              <button
+                                mat-menu-item
+                                matTooltip="Clear the form"
+                                i18n-matTooltip="@@clearForm"
+                                (click)="onResetNewCustomerOfferSkillForm()"
+                              >
+                                <mat-icon>clear</mat-icon>
+                                <span i18n="@@clear">Clear</span>
+                              </button>
+                              <button
+                                mat-menu-item
+                                matTooltip="Save the modifications"
+                                i18n-matTooltip="@@saveModifications"
+                                (click)="onAddCustomerOfferSkill()"
+                              >
+                                <mat-icon>save</mat-icon>
+                                <span i18n="@@save">Save</span>
+                              </button>
+                            </mat-menu>
+                          </mat-footer-cell>
+                        </ng-container>
+
+                        <!-- ================= Définition des colonnes ================= -->
+                        <mat-header-row *matHeaderRowDef="columnsDefinition"></mat-header-row>
+                        <mat-row
+                          cdkDrag
+                          [cdkDragDisabled]="!tokenService.hasOneOfRoles(['MATCH_CAM'])"
+                          [ngClass]="{'cursor-grab': tokenService.hasOneOfRoles(['MATCH_CAM'])}"
+                          [@rowsAnimation]=""
+                          *matRowDef="let row; columns: columnsDefinition;"
+                        >
+                        </mat-row>
+                        <ng-container *ngIf="tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                          <mat-footer-row *matFooterRowDef="footerColumnsDefinition"></mat-footer-row>
+                        </ng-container>
+                      </mat-table>
+                    </div>
+                  </mat-card>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="index > 0"> <!--onglet match-->
+              <ng-template mat-tab-label>
+                <div>{{tab}}</div>
+              </ng-template>
+              <div class="match-result-card-container">
+                <ng-container *ngIf="isFetchingMatchResults || isFetchingOfferSkills">
+                  <div class="no-match-result-container">
+                    <mat-spinner diameter="40" color="#4a148c"></mat-spinner>
+                    <p i18n="@@loadingMatchResults">Loading match results...</p>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="matchResultDataSource.data.length === 0">
+                  <div class="no-match-result-container">
+                    <ng-container *ngIf="dataSource.data.length > 0 || !tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                      <ng-container *ngIf="!noMatchResult && tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                        <mat-icon>info</mat-icon>
+                        <p i18n="@@notMatchResultYet">No result was generated for this customer offer yet.<br>Click on the
+                          button below to generate a new one.</p>
+                      </ng-container>
+
+                      <ng-container *ngIf="!noMatchResult && !tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                        <mat-icon>info</mat-icon>
+                        <p i18n="@@notMatchResultYet">No result was generated for this customer offer yet.
+                      </ng-container>
+
+                      <div class="no-collaborator-found-container" *ngIf="noMatchResult">
+                        <span i18n="@@noMatchResult">No result</span>
+                        <p i18n="@@notMatchResultMessage">No collaborator matching with this customer offer was found.<br>Click on the
+                          button below to try again.</p>
+                      </div>
+
+                      <button
+                        mat-flat-button
+                        color="primary"
+                        i18n="@@generateResult"
+                        (click)="generateNewResult()"
+                        *ngIf="tokenService.hasOneOfRoles(['MATCH_CAM'])"
+                      >
+                        GENERATE RESULT
+                      </button>
+                    </ng-container>
+
+                    <ng-container *ngIf="dataSource.data.length === 0 && tokenService.hasOneOfRoles(['MATCH_CAM'])">
+                      <mat-icon>warning</mat-icon>
+                      <p i18n="@@addRequiredSkillFirst">Before generating a match result, you must add at least one
+                        required skill.</p>
+
+                      <button mat-flat-button color="primary" i18n="@@addRequiredSkill"
+                              (click)="selectedTab.setValue(0)">ADD A REQUIRED SKILL
+                      </button>
+                    </ng-container>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="matchResultDataSource.data.length > 0">
+                  <mat-card>
+                    <div *ngIf="tokenService.hasOneOfRoles(['MATCH_CAM'])" class="generate-new-result-button-container">
+                      <div style="flex: 1"></div>
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        i18n="@@generateResult"
+                        (click)="generateNewResult()"
+                      >
+                        GENERATE NEW RESULT
+                      </button>
+                    </div>
+                    <mat-card-title>
+                      Match result ({{matchResultDataSource.data.length}} collaborators found)
+                    </mat-card-title>
+                    <mat-card-subtitle *ngIf="matchResultDataSource.data.length > 0">
+                      Date: {{matchResultDataSource.data[0].creationDate | date:"dd/MM/yyyy"}}
+                    </mat-card-subtitle>
+                    <mat-card-content>
+                      <table
+                        mat-table
+                        [dataSource]="matchResultDataSource"
+                        multiTemplateDataRows
+                      >
+
+                        <ng-container matColumnDef="score">
+                          <th *matHeaderCellDef mat-header-cell> Score</th>
+                          <td *matCellDef="let matching" mat-cell> {{matching.score}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="lastname">
+                          <th *matHeaderCellDef mat-header-cell> Lastname</th>
+                          <td *matCellDef="let matching" mat-cell> {{matching.collaborator.lastname}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="firstname">
+                          <th *matHeaderCellDef mat-header-cell> Firstname</th>
+                          <td *matCellDef="let matching" mat-cell> {{matching.collaborator.firstname}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="ggid">
+                          <th *matHeaderCellDef mat-header-cell> GGID</th>
+                          <td *matCellDef="let matching" mat-cell> {{matching.collaborator.ggid}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="agency">
+                          <th *matHeaderCellDef mat-header-cell> Agency</th>
+                          <td *matCellDef="let matching" mat-cell> {{matching.collaborator.agency.name}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="serviceline">
+                          <th *matHeaderCellDef mat-header-cell> Service Line</th>
+                          <td *matCellDef="let matching" mat-cell> {{matching.collaborator.serviceLine.name}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="expandedDetail">
+                          <td mat-cell *matCellDef="let element"
+                              [attr.colspan]="matchResultTableHeaderColumnsDefinition.length">
+                            <div class="expanded-content-container"
+                                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                              <mat-card>
+                                <mat-card-title i18n="@@scorePerSkillDetails">Score per skill detail
+                                  for {{element.collaborator.firstname}} {{element.collaborator.lastname}}</mat-card-title>
+                                <mat-card-content>
+                                  <table
+                                    mat-table
+                                    [dataSource]="element.matchingScorePerSkills"
+                                  >
+
+                                    <ng-container matColumnDef="priority">
+                                      <th *matHeaderCellDef mat-header-cell> Priority</th>
+                                      <td *matCellDef="let scorePerSkill"
+                                          mat-cell> {{scorePerSkill.customerOfferSkill.skillPriority}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="skill">
+                                      <th *matHeaderCellDef mat-header-cell> Skill</th>
+                                      <td *matCellDef="let scorePerSkill"
+                                          mat-cell> {{scorePerSkill.customerOfferSkill.skill.name}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="requiredLevel">
+                                      <th *matHeaderCellDef mat-header-cell> Required Level</th>
+                                      <td *matCellDef="let scorePerSkill"
+                                          mat-cell> {{scorePerSkill.customerOfferSkill.skillLevel.name}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="skillLevel">
+                                      <th *matHeaderCellDef mat-header-cell> Collaborator Level</th>
+                                      <td *matCellDef="let scorePerSkill"
+                                          mat-cell> {{scorePerSkill.skillLevel.name}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="score">
+                                      <th *matHeaderCellDef mat-header-cell> Score</th>
+                                      <td *matCellDef="let scorePerSkill" mat-cell> {{scorePerSkill.score}} </td>
+                                    </ng-container>
+
+                                    <tr
+                                      *matHeaderRowDef="[ 'priority', 'skill', 'requiredLevel', 'skillLevel', 'score' ]"
+                                      mat-header-row></tr>
+                                    <tr mat-row
+                                        *matRowDef="let element; columns: [ 'priority', 'skill', 'requiredLevel', 'skillLevel', 'score' ];"></tr>
+                                  </table>
+                                </mat-card-content>
+                              </mat-card>
+                            </div>
+                          </td>
+                        </ng-container>
+
+                        <tr *matHeaderRowDef="matchResultTableHeaderColumnsDefinition" mat-header-row></tr>
+                        <tr mat-row *matRowDef="let element; columns: matchResultTableHeaderColumnsDefinition;"
+                            class="example-element-row"
+                            [class.example-expanded-row]="expandedElement === element"
+                            (click)="expandedElement = expandedElement === element ? null : element">
+                        </tr>
+
+                        <tr mat-row [@rowsAnimation]="" *matRowDef="let row; columns: [ 'expandedDetail' ];"
+                            class="expandable-row"></tr>
+                      </table>
+                    </mat-card-content>
+                  </mat-card>
+                </ng-container>
+              </div>
+            </ng-container>
+
+          </mat-tab>
+        </mat-tab-group>
+
+      </ng-container>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #deleteMessage>
+  <span i18n="@@deleteCustomerOfferMessage">You are about to delete this offer. Would you like to continue?</span>
+</ng-template>

@@ -1,0 +1,40 @@
+<div class="container">
+  <h1 mat-dialog-title i18n="@@AddAnAgency">Add an agency</h1>
+  <form [formGroup]="agencyForm" class="create-agency">
+    <div mat-dialog-content class="form-container">
+        <mat-form-field>
+          <input matInput placeholder="Name" i18n-placeholder="@@agencyName" formControlName="name" required/>
+          <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+          <mat-error *ngIf="formControls('name').errors?.pattern" i18n="@@agencyNamePattern">The name must be valid</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput
+            placeholder="Postal Code"
+            i18n-placeholder="@@agencyPostalCode"
+            formControlName="postalCode"
+            type="text"
+            maxlength="5"
+            minlength="5"
+            required />
+          <mat-error *ngIf="formControls('postalCode').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+          <mat-error *ngIf="formControls('postalCode').errors?.isNumeric" i18n="@@shouldBeNumber">The postal code should be a numeric value</mat-error>
+          <mat-error *ngIf="formControls('postalCode').errors?.minlength || formControls('postalCode').errors?.maxlength" i18n="@@agencyPostalCodeLength">
+            The postal code should be exactly 5 characters long
+          </mat-error>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="!agencyForm.valid"
+        (click)="onAddClick()"
+        i18n="@@add">
+        ADD
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,139 @@
+<div class="container">
+  <h1 mat-dialog-title>Developer configurations</h1>
+  <div mat-dialog-content>
+
+    <mat-tab-group>
+
+      <mat-tab label="Info">
+        <div class="warning" *ngIf="!areEnvironmentEquivalent()">
+        BECAREFUL YOU ARE WORKING ON DIFFERENT BE AND FE ENVIRONMENTS
+        </div>
+        <table>
+          <tr class="section">
+            <td><strong>Front End</strong></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>Environment</strong></td>
+            <td>{{feEnvironment}}</td>
+          </tr>
+          <tr>
+            <td><strong>URL</strong></td>
+            <td>{{feUrl}}</td>
+          </tr>
+          <tr>
+            <td><strong>Startpoint API URL target</strong></td>
+            <td>{{startpointApiUrl}}</td>
+          </tr>
+          <tr class="section">
+            <td><strong>Back End</strong></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>Environment</strong></td>
+            <td>{{configurations?.environment}}</td>
+          </tr>
+          <tr>
+            <td><strong>Ping</strong></td>
+            <td>
+              <div class="ok" *ngIf="configurations;else pingError">
+                  OK
+              </div>
+              <ng-template #pingError><span class="warning">ERROR, is BE running on defined startpoint API URL target?</span></ng-template>
+            </td>
+          </tr>
+          <tr class="section" *ngIf="userProfile">
+            <td><strong>Connected user</strong></td>
+            <td></td>
+          </tr>
+          <tr *ngIf="userProfile">
+            <td><strong>User login</strong></td>
+            <td>{{userProfile.login}}</td>
+          </tr>
+          <tr *ngIf="userProfile">
+            <td><strong>User roles</strong></td>
+            <td class="user-roles">
+              <span *ngFor="let role of userProfile.roles; let roleIndex = index">
+              {{role}}<span *ngIf="roleIndex !== userProfile.roles.length - 1">, </span>
+              </span>
+            </td>
+          </tr>
+        </table>
+      </mat-tab>
+
+      <mat-tab label="Token tester">
+        <div class="tokens">
+          <form [formGroup]="tokensForm">
+            <mat-form-field>
+              <input matInput placeholder="Token" formControlName="token" required/>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Refresh Token" formControlName="refreshToken" required/>
+            </mat-form-field>
+            <button
+              mat-flat-button
+              color="primary"
+              class="save-tokens"
+              (click)="saveTokens()">
+              SAVE
+            </button>
+            <button
+              mat-flat-button
+              color="primary"
+              class="set-expired-token"
+              (click)="setExpiredToken()">
+              SET TOKEN AS EXPIRED
+            </button>
+          </form>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <button
+            mat-flat-button
+            color="primary"
+            class="api-get"
+            (click)="simplePing()">
+            Simulate ONE API call
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            class="api-get-two-times"
+            (click)="doublePing()">
+            Simulate TWO API calls
+          </button>
+          <div *ngFor="let ping of pings">
+            {{ping}}
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Last tokens">
+        <div class="activation-token">{{lastTokens?.activationToken}}</div>
+        <div class="recover-password-token">{{lastTokens?.recoverPasswordToken}}</div>
+        <mat-divider></mat-divider>
+        <div>
+          <button
+            mat-flat-button
+            color="primary"
+            class="get-last-tokens"
+            (click)="getLastTokens()">
+            Get last tokens
+          </button>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+  </div>
+  <div mat-dialog-actions align="end">
+    <button
+      mat-flat-button
+      class="reset-data"
+      color="primary"
+      *ngIf="isBeE2EEnvironment()"
+      (click)="resetE2ETestingData()">
+      RESET&INIT E2E DATA
+    </button>
+    <button mat-button class="close" [mat-dialog-close]="false">CLOSE</button>
+  </div>
+</div>

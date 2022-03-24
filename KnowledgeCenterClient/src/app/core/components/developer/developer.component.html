@@ -1,0 +1,36 @@
+<div *ngIf="developerConfigurationEnabled">
+  <div [ngSwitch]="state">
+    <div *ngSwitchCase="State.LOADING">
+      <button mat-flat-button class="dev-config"
+        color="warn"
+        [disabled]="true">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+    <div *ngSwitchCase="State.OK">
+      <button mat-flat-button class="dev-config"
+        color="warn"
+        (click)="openConfigurations()">
+        {{environment}}
+        <mat-icon>build</mat-icon>
+      </button>
+    </div>
+    <div *ngSwitchCase="State.ERROR">
+      <button mat-flat-button class="dev-config"
+        color="warn"
+        (click)="openConfigurations()">
+        ERROR
+        <mat-icon>error</mat-icon>
+      </button>
+    </div>
+    <div *ngSwitchCase="State.WARNING">
+      <button mat-flat-button class="dev-config"
+        color="warn"
+        (click)="openConfigurations()">
+        WARNING
+        <mat-icon>warning</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,29 @@
+@import '~@angular/material/_theming.scss';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+@include mat-core();
+
+$primary: mat-palette($mat-purple, 900);
+$accent:  mat-palette($mat-pink, A700, A100, A600);
+
+$global-theme: mat-light-theme($primary, $accent);
+
+@include mat-toolbar-theme($global-theme);
+@include mat-button-theme($global-theme);
+@include mat-checkbox-theme($global-theme);
+@include mat-tabs-theme($global-theme);
+@include mat-form-field-theme($global-theme);
+@include mat-chips-theme($global-theme);
+@include mat-badge-theme($global-theme);
+@include mat-icon-theme($global-theme);
+@include mat-slide-toggle-theme($global-theme);
+@include mat-progress-spinner-theme($global-theme);
+@include mat-progress-bar-theme($global-theme);
+
+$custom-typography: mat-typography-config(
+  $font-family: 'Roboto, "Helvetica Neue", sans-serif',
+  $body-1: mat-typography-level(16px, 24px),
+  $button: mat-typography-level(16px, 24px),
+  $input: mat-typography-level(16px, 1.25)
+);
+@include mat-core($custom-typography);

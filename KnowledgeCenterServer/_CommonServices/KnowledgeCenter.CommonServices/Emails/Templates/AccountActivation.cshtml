@@ -1,0 +1,31 @@
+﻿@using RazorLight
+@inherits TemplatePage<KnowledgeCenter.CommonServices.Contracts.AccountActivationModel>
+@model KnowledgeCenter.CommonServices.Contracts.AccountActivationModel
+
+@{ await IncludeAsync("Emails/Templates/Layout_Header.cshtml", Model); }
+
+<td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
+                <b>Account activation</b>
+            </td>
+        </tr>
+        <tr>
+            <td style="color: #afafaf; font-family: Arial, sans-serif; font-size: 16px;">
+                <i>Knowledge center</i>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                Hello @Model.username!
+                <br /><br />
+                Welcome on Knowledge center portal!
+                <br />
+                In order to activate your account just click on this <a href="@Model.activationUrl">link</a>!
+            </td>
+        </tr>
+    </table>
+</td>
+
+@{ await IncludeAsync("Emails/Templates/Layout_Footer.cshtml", Model); }

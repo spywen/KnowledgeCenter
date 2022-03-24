@@ -1,0 +1,16 @@
+<div class="container">
+  <h1 i18n="@@RateThisProject">Rate project: <app-truncate [text]="project.title" [maxSize]="20" [displayTooltip]="true"></app-truncate></h1>
+  <div>
+      <app-star-rating [(rate)]="project.myLike.rate" [isEditable]="true" [size]="'L'"></app-star-rating>
+  </div>
+  <button
+    mat-flat-button
+    class="confirm-like"
+    color="primary"
+    type="submit"
+    (click)="confirm()"
+    i18n="@@confirm">
+    CONFIRM
+  </button>
+</div>
+

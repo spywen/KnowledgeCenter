@@ -1,0 +1,183 @@
+<div class="container full-page-module">
+  <div class="only-desktop visible-xs">
+    <mat-icon>phonelink_erase</mat-icon>
+    <p i18n="@@desktopRequired">Desktop required to see content of this module</p>
+  </div>
+  <div class="content hidden-xs">
+    <p i18n="@@covid19Intro"><em>All those stats are official and come from hospital environment in date of <strong>{{covidStatsResponse.lastDay | date:'dd/MM/yyyy'}}</strong>. The reality is probably worst...</em></p>
+    <div class="reports">
+      <div class="report">
+        <div class="details">
+          <p>FRANCE<br/>DAILY REPORT</p>
+          <div>
+            <mat-icon matTooltip="Deaths">report</mat-icon>
+            <p class="daily" matTooltip="Number of deaths since yesterday">{{covidStatsResponse.france.dailyNewDeaths}}</p>
+            <p class="pourcentage" matTooltip="Evolution of deaths since yesterday"><span *ngIf="covidStatsResponse.france.dailyDeathsVariation > 0">+</span>{{covidStatsResponse.france.dailyDeathsVariation}}%</p>
+            <p class="total" matTooltip="Total of deaths since beginning of crisis">Total: {{covidStatsResponse.france.totalDeaths}}</p>
+          </div>
+          <div>
+            <mat-icon matTooltip="Recovered">healing</mat-icon>
+            <p class="daily" matTooltip="Number of recovered since yesterday">{{covidStatsResponse.france.dailyNewRecovered}}</p>
+            <p class="pourcentage" matTooltip="Evolution of recovered since yesterday"><span *ngIf="covidStatsResponse.france.dailyRecoveredVariation > 0">+</span>{{covidStatsResponse.france.dailyRecoveredVariation}}%</p>
+            <p class="total" matTooltip="Total of recovered since beginning of crisis">Total: {{covidStatsResponse.france.totalRecovered}}</p>
+          </div>
+          <div>
+            <mat-icon matTooltip="Detected">my_location</mat-icon>
+            <p class="daily" matTooltip="Number of detected since yesterday">{{covidStatsResponse.france.dailyNewDetected}}</p>
+            <p class="pourcentage" matTooltip="Evolution of detected since yesterday"><span *ngIf="covidStatsResponse.france.dailyDetectedVariation > 0">+</span>{{covidStatsResponse.france.dailyDetectedVariation}}%</p>
+            <p class="total" matTooltip="Total of detected since beginning of crisis">Total: {{covidStatsResponse.france.totalDetected}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="report">
+        <div class="details">
+          <p>WORLD<br/>DAILY REPORT</p>
+          <div>
+            <mat-icon matTooltip="Deaths">report</mat-icon>
+            <p class="daily" matTooltip="Number of deaths since yesterday">{{covidStatsResponse.world.dailyNewDeaths}}</p>
+            <p class="pourcentage" matTooltip="Evolution of deaths since yesterday"><span *ngIf="covidStatsResponse.world.dailyDeathsVariation > 0">+</span>{{covidStatsResponse.world.dailyDeathsVariation}}%</p>
+            <p class="total" matTooltip="Total of deaths since beginning of crisis">Total: {{covidStatsResponse.world.totalDeaths}}</p>
+          </div>
+          <div>
+            <mat-icon matTooltip="Recovered">healing</mat-icon>
+            <p class="daily" matTooltip="Number of recovered since yesterday">{{covidStatsResponse.world.dailyNewRecovered}}</p>
+            <p class="pourcentage" matTooltip="Evolution of recovered since yesterday"><span *ngIf="covidStatsResponse.world.dailyRecoveredVariation > 0">+</span>{{covidStatsResponse.world.dailyRecoveredVariation}}%</p>
+            <p class="total" matTooltip="Total of recovered since beginning of crisis">Total: {{covidStatsResponse.world.totalRecovered}}</p>
+          </div>
+          <div>
+            <mat-icon matTooltip="Detected">my_location</mat-icon>
+            <p class="daily" matTooltip="Number of detected since yesterday">{{covidStatsResponse.world.dailyNewDetected}}</p>
+            <p class="pourcentage" matTooltip="Evolution of detected since yesterday"><span *ngIf="covidStatsResponse.world.dailyDetectedVariation > 0">+</span>{{covidStatsResponse.world.dailyDetectedVariation}}%</p>
+            <p class="total" matTooltip="Total of detected since beginning of crisis">Total: {{covidStatsResponse.world.totalDetected}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="selectors">
+      <mat-button-toggle-group [(ngModel)]="type">
+        <mat-button-toggle value="total" i18n="@@total">Total</mat-button-toggle>
+        <mat-button-toggle value="daily" i18n="@@daily">Daily</mat-button-toggle>
+      </mat-button-toggle-group>
+      <form [formGroup]="statsForm">
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@category" i18n="@@countries">Countries</mat-label>
+          <mat-select formControlName="countryCodes" multiple required>
+            <mat-option *ngFor="let country of countries" [value]="country.code" (onSelectionChange)="countriesChanged($event)">
+              {{country.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-button mat-raised-button
+          type="submit"
+          (click)="search()"
+          [disabled]="!statsForm.valid"
+          i18n="@@search">
+          Search
+        </button>
+        <button mat-button mat-flat-button
+          type="button"
+          (click)="clear()"
+          i18n="@@clear">
+          Clear
+        </button>
+      </form>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <mat-tab-group class="tabs">
+      <mat-tab label="Deaths">
+        <section class="graphs" *ngIf="type === 'total'">
+          <div *ngIf="covidStatsResponse.deaths.chartDataTotal.dataSets?.length > 0">
+            <canvas baseChart width="400" height="200"
+                  [datasets]="covidStatsResponse.deaths.chartDataTotal.dataSets"
+                  [labels]="covidStatsResponse.deaths.chartDataTotal.labels"
+                  [colors]="chartColors"
+                  [options]="chartOptions"
+                  chartType="line"
+                  legend="true">
+            </canvas>
+          </div>
+        </section>
+        <section class="graphs" *ngIf="type === 'daily'">
+          <div *ngIf="covidStatsResponse.deaths.chartDataPerDay.dataSets?.length > 0">
+            <canvas baseChart width="400" height="200"
+                  [datasets]="covidStatsResponse.deaths.chartDataPerDay.dataSets"
+                  [labels]="covidStatsResponse.deaths.chartDataPerDay.labels"
+                  [colors]="chartColors"
+                  [options]="chartOptions"
+                  chartType="line"
+                  legend="true">
+            </canvas>
+          </div>
+        </section>
+      </mat-tab>
+
+      <mat-tab label="Recovered">
+        <section class="graphs" *ngIf="type === 'total'">
+          <div *ngIf="covidStatsResponse.recovered.chartDataTotal.dataSets?.length > 0 > 0">
+            <canvas baseChart width="400" height="200"
+                  [datasets]="covidStatsResponse.recovered.chartDataTotal.dataSets"
+                  [labels]="covidStatsResponse.recovered.chartDataTotal.labels"
+                  [colors]="chartColors"
+                  [options]="chartOptions"
+                  chartType="line"
+                  legend="true">
+            </canvas>
+          </div>
+        </section>
+        <section class="graphs" *ngIf="type === 'daily'">
+          <div *ngIf="covidStatsResponse.recovered.chartDataPerDay.dataSets?.length > 0 > 0">
+            <canvas baseChart width="400" height="200"
+                  [datasets]="covidStatsResponse.recovered.chartDataPerDay.dataSets"
+                  [labels]="covidStatsResponse.recovered.chartDataPerDay.labels"
+                  [colors]="chartColors"
+                  [options]="chartOptions"
+                  chartType="line"
+                  legend="true">
+            </canvas>
+          </div>
+        </section>
+      </mat-tab>
+
+      <mat-tab label="Detected">
+        <section class="graphs" *ngIf="type === 'total'">
+          <div *ngIf="covidStatsResponse.detected.chartDataTotal.dataSets?.length > 0">
+            <canvas baseChart width="400" height="200"
+                  [datasets]="covidStatsResponse.detected.chartDataTotal.dataSets"
+                  [labels]="covidStatsResponse.detected.chartDataTotal.labels"
+                  [colors]="chartColors"
+                  [options]="chartOptions"
+                  chartType="line"
+                  legend="true">
+            </canvas>
+          </div>
+        </section>
+        <section class="graphs" *ngIf="type === 'daily'">
+          <div *ngIf="covidStatsResponse.detected.chartDataPerDay.dataSets?.length > 0">
+            <canvas baseChart width="400" height="200"
+                  [datasets]="covidStatsResponse.detected.chartDataPerDay.dataSets"
+                  [labels]="covidStatsResponse.detected.chartDataPerDay.labels"
+                  [colors]="chartColors"
+                  [options]="chartOptions"
+                  chartType="line"
+                  legend="true">
+            </canvas>
+          </div>
+        </section>
+      </mat-tab>
+    </mat-tab-group>
+
+    <p i18n="@@covid19upToDate"><em>Up to date all days with yesterday data coming from: <a href="https://www.data.gouv.fr/fr/datasets/coronavirus-covid19-evolution-par-pays-et-dans-le-monde-maj-quotidienne/" target="_blank">www.data.gouv.fr</a></em></p>
+    <p i18n="@@covid19others">
+      <em>Famous other tools online: <a href="https://phclement.github.io/Covid-19/" target="_blank">France</a>, <a href="https://www.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6" target="_blank">World</a></em>
+    </p>
+  </div>
+</div>
+
+<ng-template #tooMuchCountriesMessage>
+  <span i18n="@@tooMuchCountries">10 selected countries maximum</span>
+</ng-template>

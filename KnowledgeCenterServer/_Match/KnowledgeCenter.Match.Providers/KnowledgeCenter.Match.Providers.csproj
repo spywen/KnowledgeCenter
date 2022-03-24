@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\KnowledgeCenter.Common\KnowledgeCenter.Common.csproj" />
+    <ProjectReference Include="..\..\KnowledgeCenter.DataConnector\KnowledgeCenter.DataConnector.csproj" />
+    <ProjectReference Include="..\KnowledgeCenter.Match.Contracts\KnowledgeCenter.Match.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=8.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005">
+      <HintPath>..\..\..\..\..\.nuget\packages\automapper\8.1.1\lib\netstandard2.0\AutoMapper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

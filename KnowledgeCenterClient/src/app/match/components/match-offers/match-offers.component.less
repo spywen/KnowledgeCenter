@@ -1,0 +1,313 @@
+@import './../../../../styles/variables.less';
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  background-color: #fafafa;
+
+  mat-cell:last-child {
+    flex: none;
+  }
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 0.35s cubic-bezier(0, .25, .2, 1);
+}
+
+.container {
+  display: flex;
+
+  .drawer-container {
+    width: 100%;
+
+    mat-sidenav {
+      width: 30%;
+      min-width: 325px;
+      max-width: 425px;
+    }
+
+    mat-sidenav-content {
+      .no-selected-offer-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+
+        mat-icon {
+          color: #4A148C;
+          font-size: 36px;
+        }
+      }
+
+      .toggle-drawer-button {
+        z-index: 999;
+        position: absolute;
+        bottom: 50%;
+        left: 8px;
+      }
+    }
+
+    .offer-card-container {
+      padding: 56px 56px;
+      box-sizing: border-box;
+      height: calc(~"100vh - 113px");
+
+      .edit-offer-button-container {
+        display: flex;
+        flex-direction: row;
+
+        div {
+          flex: 1;
+        }
+
+        .mat-icon-button {
+          margin-left: 8px;
+        }
+      }
+
+      .offer-card {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        mat-card {
+          padding: 8px;
+          flex: 1;
+
+          .offer-card-status-title-container {
+            display: flex;
+            flex-direction: row;
+
+            mat-card-title {
+              display: flex;
+              align-items: center;
+              margin-bottom: 0;
+            }
+          }
+
+          .mission-title {
+            margin-bottom: 11px;
+          }
+
+          .offer-fields, .followed-by-fields, .mission-fields {
+            display: flex;
+            flex-wrap: wrap;
+
+            mat-form-field {
+              flex: 1;
+              margin-left: 4px;
+              margin-right: 4px;
+
+              textarea {
+                height: 69px;
+              }
+            }
+          }
+
+          .mission-fields {
+            flex-direction: column;
+
+            .mission-dates-requirements-container {
+              flex-direction: row;
+
+              .mission-dates {
+                flex-wrap: wrap;
+                display: flex;
+              }
+            }
+          }
+
+          .select-placeholder-container {
+            display: flex;
+            align-items: center;
+
+            span {
+              flex: 1;
+            }
+          }
+        }
+      }
+
+      .mission-requirements {
+        padding: 8px;
+
+        mat-slide-toggle:not(:last-child) {
+          margin-right: 24px;
+        }
+      }
+
+      .create-offer-button-container {
+        display: flex;
+        flex-direction: row;
+
+        div {
+          flex: 1;
+        }
+
+        button {
+          margin-right: 8px;
+        }
+      }
+
+      .skills-container {
+        margin-top: 32px;
+        margin-bottom: 16px;
+        display: flex;
+
+        mat-card {
+          overflow: auto;
+          padding: 24px;
+          flex: 1;
+
+          .progress-bar {
+            margin: 40px auto;
+            width: 200px;
+          }
+
+          mat-table {
+            width: 100%;
+
+            .flex-none {
+              flex: none
+            }
+
+            mat-header-cell:not(:last-child) {
+              flex: 2;
+            }
+
+            mat-cell:not(:last-child) {
+              flex: 2;
+            }
+
+            mat-footer-row {
+              display: flex;
+            }
+
+            mat-footer-cell {
+              form {
+                flex: 1;
+
+                mat-form-field {
+                  width: 90%;
+                }
+              }
+            }
+
+            mat-footer-cell:not(:last-child) {
+              flex: 2;
+            }
+
+            mat-footer-cell:last-child {
+              flex: none;
+            }
+
+            .cursor-grab {
+              cursor: grab;
+            }
+
+            mat-row:not(.cdk-drag-placeholder) {
+              transition: transform 0.35s cubic-bezier(0, .5, .2, 1);
+            }
+
+            td:first-child {
+              width: 6vh;
+            }
+
+            .mat-footer-cell {
+              padding-top: 14px;
+            }
+
+            mat-form-field {
+              flex: 1;
+            }
+          }
+        }
+      }
+
+      .generate-match-result-button-container {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+
+        div:first-child {
+          flex: 1;
+        }
+      }
+    }
+
+    .match-result-card-container {
+      padding: 56px 56px;
+      box-sizing: border-box;
+      height: calc(~"100vh - 113px");
+
+      .generate-new-result-button-container {
+        display: flex;
+        flex-direction: row;
+
+        div {
+          flex: 1;
+        }
+      }
+
+      .no-match-result-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+
+        mat-icon {
+          color: @mainColor;
+          font-size: 36px;
+        }
+
+        .no-collaborator-found-container {
+          span {
+            font-weight: bold;
+            font-size: 1.3em;
+          }
+        }
+      }
+
+      .expanded-content-container {
+        overflow: hidden;
+        display: flex;
+
+        mat-card {
+          width: 100%;
+
+          table {
+            margin-bottom: 24px;
+          }
+        }
+      }
+
+      .example-element-row:not(.example-expanded-row):hover {
+        background: #f5f5f5;
+      }
+
+      .example-element-row:not(.example-expanded-row):active {
+        background: #efefef;
+      }
+
+      .example-element-row td {
+        border-bottom-width: 0;
+      }
+
+      table {
+        .expandable-row {
+          height: 0;
+        }
+      }
+    }
+  }
+}

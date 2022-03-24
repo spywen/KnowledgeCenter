@@ -1,0 +1,54 @@
+<div class="container">
+    <h1 mat-dialog-title *ngIf="!isEdition" i18n="@@CreateANewProject">Create a new project</h1>
+    <h1 mat-dialog-title *ngIf="isEdition" i18n="@@UpdateProject">Update project</h1>
+    <form [formGroup]="projectForm" class="create-project">
+      <div mat-dialog-content class="form-container">
+          <mat-form-field hintLabel="Max 140 characters">
+            <input matInput #title placeholder="Title" i18n-placeholder="@@projectTitle" maxlength="140" formControlName="title" required/>
+            <mat-hint align="end">{{title.value?.length || 0}}/140</mat-hint>
+            <mat-error *ngIf="formControls('title').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+            <mat-error *ngIf="formControls('title').errors?.maxlength" i18n="@@maxLength">The name must be under 140 characters</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label i18n="@@tags">Tags</mat-label>
+            <mat-select formControlName="tagIds" multiple class="tags-select">
+              <mat-option *ngFor="let tag of tags" [value]="tag.id">{{tag.description}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Max 300 characters">
+            <textarea matInput #shortDescription formControlName="shortDescription" i18n-placeholder="@@projectShortDescription" maxlength="300" required placeholder="Short Description"></textarea>
+            <mat-hint align="end">{{shortDescription.value?.length || 0}}/300</mat-hint>
+            <mat-error *ngIf="formControls('shortDescription').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+            <mat-error *ngIf="formControls('shortDescription').errors?.maxlength" i18n="@@maxLength">The name must be under 300 characters</mat-error>
+          </mat-form-field>
+
+          <mat-label class="description-label">Full description</mat-label>
+          <angular-editor id="description-editor" formControlName="description" [config]="config"></angular-editor>
+      </div>
+      <div mat-dialog-actions align="end">
+        <button mat-button class="cancel" [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          *ngIf="!isEdition"
+          [disabled]="!projectForm.valid"
+          (click)="confirm()"
+          i18n="@@create">
+          CREATE
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          *ngIf="isEdition"
+          [disabled]="!projectForm.valid"
+          (click)="confirm()"
+          i18n="@@update">
+          UPDATE
+        </button>
+      </div>
+    </form>
+  </div>

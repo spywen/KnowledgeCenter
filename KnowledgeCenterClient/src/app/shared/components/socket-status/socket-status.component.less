@@ -1,0 +1,25 @@
+.socket-status{
+  color: white;
+  position: fixed;
+  bottom: 5px;
+  left: 5px;
+  z-index: 1000000;
+  cursor: pointer;
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+button{
+  cursor: pointer;
+  &.simple-icon{
+    cursor: auto;
+  }
+}

@@ -1,0 +1,8 @@
+<p *ngIf="recaptchaToken" [formGroup]="parentForm">
+  <re-captcha
+    formControlName="captcha"
+    name="captcha"
+    required
+    [siteKey]="recaptchaToken"
+  ></re-captcha>
+</p>

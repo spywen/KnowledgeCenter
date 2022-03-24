@@ -1,0 +1,27 @@
+<div class="container">
+  <h1 mat-dialog-title i18n="@@updateAgency">Update skill level for {{data.skillToEdit.skill.name}}</h1>
+  <div mat-dialog-content class="form-container">
+    <form [formGroup]="collaboratorSkillForm">
+      <mat-form-field>
+        <mat-label i18n="@@skillLevel">Skill Level</mat-label>
+        <mat-select formControlName="skillLevelId" class="skill-level-select">
+          <mat-option *ngFor="let skillLevel of skillLevels" [value]="skillLevel.id">
+            {{skillLevel.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="!collaboratorSkillForm.valid"
+      (click)="onUpdateClick()"
+      i18n="@@update">
+      UPDATE
+    </button>
+  </div>
+</div>

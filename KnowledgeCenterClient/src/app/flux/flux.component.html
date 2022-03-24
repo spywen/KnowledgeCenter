@@ -1,0 +1,174 @@
+<div class="full-page-module primary">
+  <div class="module-content">
+    <div class="border">
+
+      <!-- CREATION -->
+      <div class="mat-elevation-z4 publication-card publication" *ngIf="isCreating" @items>
+
+        <div class="navigateCategory previous"
+          (click)="changeCategory(false)">
+          <button mat-icon-button><mat-icon>keyboard_arrow_up</mat-icon></button>
+        </div>
+
+        <div class="navigateCategory next"
+          (click)="changeCategory(true)">
+          <button mat-icon-button><mat-icon>keyboard_arrow_down</mat-icon></button>
+        </div>
+
+        <div class="category"
+          matTooltipPosition="left"
+          matTooltip="{{CategoryMetadata[categoryCode].description}}"
+          [ngStyle]="{'background-color': CategoryMetadata[categoryCode].color}">
+          <mat-icon>
+            {{CategoryMetadata[categoryCode].icon}}
+          </mat-icon>
+        </div>
+
+        <div class="content">
+          <form [formGroup]="fluxForm" class="create-flux">
+            <div class="message">
+
+              <app-kc-wysiwyg formControlName="message" maxSize="400" [breakLine]="false" autofocus tabindex="0"></app-kc-wysiwyg>
+
+              <mat-form-field tabindex="1">
+                <mat-label i18n="@@category">Category</mat-label>
+                <mat-select formControlName="categoryCode">
+                  <mat-option *ngFor="let category of CategoryMetadata | keyvalue : keepOrder" [value]="category.key">{{category.value.description}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div tabindex="2">
+                <mat-slide-toggle formControlName="isAnonymous" color="primary" (change)="onChangeIsAnonymousToggle($event)">
+                  {{IsAnonymous ? 'This message is anonymous' : 'This message is signed'}}
+                </mat-slide-toggle>
+              </div>
+            </div>
+
+            <div align="end">
+              <button type="button" mat-button i18n="@@cancel" (click)="cancelCreation()">CANCEL</button>
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                [disabled]="!fluxForm.valid"
+                (click)="publish()">
+                <span i18n="@@publish">PUBLISH</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- VIEW -->
+      <mat-progress-bar mode="buffer" class="loading" *ngIf="loading"></mat-progress-bar>
+
+      <div @list *ngIf="!loading">
+        <div class="mat-elevation-z4 publication-card publication" *ngFor="let publication of publications" @items>
+
+          <div class="actions" *appHasOneOfRoles="['FLUX_ADMIN', publication.isOwner]">
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="actions-menu" color="primary">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="delete(publication)">
+                <mat-icon>delete</mat-icon>
+                <span i18n="@@delete">Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+
+          <div class="category"
+            matTooltipPosition="left"
+            matTooltip="{{publication.category.description}}"
+            [ngStyle]="{'background-color': publication.category.color}">
+            <mat-icon>
+              {{publication.category.icon}}
+            </mat-icon>
+          </div>
+
+          <div class="content">
+            <p class="message" [style.font-size.px]="publication.fontSize" [innerHTML]="publication.message"></p>
+
+            <div class="footer">
+              <div class="meta">
+                <span>{{publication.creationDate | date:'dd/MM/yyyy HH:mm'}}</span>
+                <span *ngIf="!publication.isAnonymous">&nbsp;by {{publication.user?.fullname}}</span>
+              </div>
+              <div class="like">
+                <button mat-icon-button
+                  [matBadge]="publication.heartLikes.count"
+                  [matBadgeHidden]="publication.heartLikes.isZeroCount"
+                  matBadgePosition="above after"
+                  matBadgeColor="primary"
+                  matTooltip="Love it!"
+                  i18n-matTooltip="@@loveit!"
+                  matTooltipShowDelay="1000"
+                  [@justClickedEffect]="publication.heartLikes.isUserLike"
+                  (click)="like(publication, PublicationLikeType.heart)"
+                  class="heart" [ngClass]="{ 'my-like' : publication.heartLikes.isUserLike }">
+                    <mat-icon *ngIf="!publication.heartLikes.isUserLike" fontSet="material-icons-outlined">favorite_border</mat-icon>
+                    <mat-icon *ngIf="publication.heartLikes.isUserLike">favorite</mat-icon>
+                  </button>
+                <button mat-icon-button
+                  [matBadge]="publication.upLikes.count"
+                  [matBadgeHidden]="publication.upLikes.isZeroCount"
+                  matBadgePosition="above after"
+                  matBadgeColor="primary"
+                  matTooltip="Like"
+                  i18n-matTooltip="@@like"
+                  matTooltipShowDelay="1000"
+                  [@justClickedEffect]="publication.upLikes.isUserLike"
+                  (click)="like(publication, PublicationLikeType.up)"
+                  class="up" [ngClass]="{ 'my-like' : publication.upLikes.isUserLike }">
+                    <mat-icon *ngIf="!publication.upLikes.isUserLike" fontSet="material-icons-outlined">thumb_up</mat-icon>
+                    <mat-icon *ngIf="publication.upLikes.isUserLike">thumb_up</mat-icon>
+                  </button>
+                <button mat-icon-button
+                  [matBadge]="publication.downLikes.count"
+                  [matBadgeHidden]="publication.downLikes.isZeroCount"
+                  matBadgePosition="above after"
+                  matBadgeColor="primary"
+                  matTooltip="Unlike"
+                  i18n-matTooltip="@@dislike"
+                  matTooltipShowDelay="1000"
+                  [@justClickedEffect]="publication.downLikes.isUserLike"
+                  (click)="like(publication, PublicationLikeType.down)"
+                  class="down" [ngClass]="{ 'my-like' : publication.downLikes.isUserLike }">
+                    <mat-icon *ngIf="!publication.downLikes.isUserLike" fontSet="material-icons-outlined">thumb_down</mat-icon>
+                    <mat-icon *ngIf="publication.downLikes.isUserLike">thumb_down</mat-icon>
+                  </button>
+                <button mat-icon-button
+                  [matBadge]="publication.warningLikes.count"
+                  [matBadgeHidden]="publication.warningLikes.isZeroCount"
+                  matBadgePosition="above after"
+                  matBadgeColor="primary"
+                  matTooltip="Report!"
+                  i18n-matTooltip="@@report!"
+                  matTooltipShowDelay="1000"
+                  [@justClickedEffect]="publication.warningLikes.isUserLike"
+                  (click)="like(publication, PublicationLikeType.warning)"
+                  class="warning" [ngClass]="{ 'my-like' : publication.warningLikes.isUserLike }">
+                    <mat-icon *ngIf="!publication.warningLikes.isUserLike" fontSet="material-icons-outlined">error_outline</mat-icon>
+                    <mat-icon *ngIf="publication.warningLikes.isUserLike">error</mat-icon>
+                  </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button mat-fab class="bottom-right-fixed-button" color="custom-white" (click)="create()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+</div>
+
+<ng-template #deleteMessage>
+  <span i18n="@@deletePublicationMessage">You are about to delete your publication</span>
+</ng-template>
+
+<app-socket-status (tryRestart)="restartSocketConnection()"></app-socket-status>

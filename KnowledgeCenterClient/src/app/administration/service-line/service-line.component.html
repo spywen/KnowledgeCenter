@@ -1,0 +1,64 @@
+<div class="container full-page-module">
+
+  <div class="module-content">
+
+    <form [formGroup]="filterForm" class="filter-bar">
+      <mat-form-field appearance="outline">
+        <mat-label>Filter</mat-label>
+        <input matInput
+          (keyup)="applyFilter($event.target.value)"
+          placeholder="Filter"
+          name="filter"
+          formControlName="filter"
+          i18n-placeholder="@@filter">
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+    </form>
+
+    <table [dataSource]="dataSource" mat-table matSort>
+
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header> Name</th>
+        <td *matCellDef="let element" mat-cell> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header> Description</th>
+        <td *matCellDef="let element" mat-cell> {{element.description}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef class="actions-column" mat-header-cell> Actions</th>
+        <td *matCellDef="let element" mat-cell>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="edit(element)">
+              <mat-icon>edit</mat-icon>
+              <span i18n="@@edit">Edit</span>
+            </button>
+            <button mat-menu-item (click)="delete(element)">
+              <mat-icon>delete</mat-icon>
+              <span i18n="@@delete">Delete</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr mat-row [@rowsAnimation]="" *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <button mat-fab class="bottom-right-fixed-button" color="primary" (click)="add()" aria-label="Add service line">
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <div
+      *ngIf="dataSource.filteredData.length === 0"
+      class="no-data"
+      i18n="@@NoServiceLineFound">No service line found</div>
+
+  </div>
+
+</div>

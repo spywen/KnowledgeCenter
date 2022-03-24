@@ -1,0 +1,61 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the web application"
+      }
+    },
+    "appServicePlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the app service plan to use"
+      }
+    },
+    "clientAffinityEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Flag to enable client affinity"
+      }
+    },
+    "httpsOnly": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Flag to enable client affinity"
+      }
+    },
+    "nodeVersion": {
+      "type": "string",
+      "defaultValue": "10.14.1",
+      "metadata": {
+        "description": "The version of node to use"
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-08-01",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[parameters('webAppName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+        "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
+        "httpsOnly": "[parameters('httpsOnly')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "[parameters('nodeVersion')]"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

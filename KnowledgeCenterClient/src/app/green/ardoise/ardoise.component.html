@@ -1,0 +1,13 @@
+<div class="container full-page-module">
+  <div class="ardoise">
+    <div class="string"></div>
+    <div class="mask">
+      <div *ngIf="publication" class="border">
+        <div class="ardoise">
+          <div class="ardoise-text"><p class="message" [innerHTML]="publication.message"></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!publication" class="no-data" i18n="@@noArdoiseFound">No ardoise published for the moment, please come back later</div>
+</div>

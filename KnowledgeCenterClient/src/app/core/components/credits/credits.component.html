@@ -1,0 +1,29 @@
+<div class="container">
+  <h1 mat-dialog-title i18n="@@KnowledgeCenterKnights">Knowledge center knights</h1>
+  <p mat-dialog-subtitle i18n="@@findHereTheListOFKnights">Find here the list of all knights who participated to the elaboration of this portal</p>
+  <div mat-dialog-content class="form-container">
+
+    <mat-list>
+
+      <ng-container *ngFor="let module of modules">
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>{{module.title}}</h3>
+        <mat-list-item *ngFor="let participant of module.participants">
+          <img class="avatar" [src]="tokenService.getGravatarPerEmail(participant.email, 50)"/>
+          <div>
+            <h4 mat-line>{{ participant.firstname }} {{ participant.lastname | uppercase }}</h4>
+            <p mat-line>
+              <span *ngFor="let participatedAs of participant.as; let asIndex = index">
+                <mat-icon class="idea-owner" matTooltip="Owner of some the module ideas" i18n-matTooltip="@@ownerOfSomeModuleIdeas" *ngIf="participatedAs === As.IdeaOwner">stars</mat-icon>{{participatedAs}}
+                <span *ngIf="asIndex !== participant.as.length - 1">, </span>
+              </span>
+            </p>
+          </div>
+        </mat-list-item>
+      </ng-container>
+
+    </mat-list>
+
+  </div>
+</div>
+

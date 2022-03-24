@@ -1,0 +1,29 @@
+<mat-icon *ngIf="params.type === snackBarType.ERROR">bug_report</mat-icon>
+<mat-icon *ngIf="params.type === snackBarType.WARNING">warning</mat-icon>
+
+<mat-icon *ngIf="params.type === snackBarType.INFO">info</mat-icon>
+<mat-icon *ngIf="params.type === snackBarType.INSTALL">cloud_download</mat-icon>
+<mat-icon *ngIf="params.type === snackBarType.UPDATE">update</mat-icon>
+
+<div class="message">
+  <ng-container
+    *ngTemplateOutlet="params.template ? params.template : message">
+  </ng-container>
+</div>
+
+<div align="end">
+  <button *ngIf="params.actionButtonText" mat-button (click)="snackBarRef.dismissWithAction()">
+    {{params.actionButtonText}}
+  </button>
+
+  <button *ngIf="params.dismissButtonText" mat-button class="close" (click)="snackBarRef.dismiss()">
+    {{params.dismissButtonText}}
+  </button>
+  <button *ngIf="!params.dismissButtonText" mat-button class="close" (click)="snackBarRef.dismiss()">
+    OK
+  </button>
+</div>
+
+<ng-template #message>
+  {{params.message}}
+</ng-template>

@@ -1,0 +1,158 @@
+<form class="filters-form" [formGroup]="filtersForm">
+
+  <div class="filters">
+    <mat-form-field appearance="outline" class="keyword-filter">
+      <mat-label i18n="@searchCustomerOfferByMultipleCriteria">Search (customer, job title, customer account manager)</mat-label>
+      <input matInput
+             (keyup)="onSearchFieldValueChanged($event)"
+             name="search"
+             formControlName="searchField">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <button mat-icon-button matTooltip="Show filters" i18n-matTooltip="@@showFilters"
+            (click)="switchAdditionalFiltersVisibility()">
+      <mat-icon [matBadge]="appliedFilters.length" matBadgeColor="primary">filter_list</mat-icon>
+    </button>
+
+    <div class="additional-filters" [@revealAdditionalFiltersAnimation]="aditionalFiltersAnimationState">
+      <div class="chips">
+        <mat-chip-list>
+          <mat-chip
+            color="primary"
+            selected
+            *ngFor="let filter of appliedFilters"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="removeFilter(filter)">
+            <span class="chip-text">{{filter.displayedName}}</span>
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+
+      <mat-form-field *ngIf="filtersForm.controls.customer.value === ''">
+        <mat-label i18n="@@customer">Customer</mat-label>
+        <mat-select
+          id="customer"
+          formControlName="customer"
+          placeholder="Customer"
+          i18n-placeholder="@@customer"
+          (selectionChange)="onApplyNewFilter($event)"
+        >
+          <mat-option *ngFor="let customer of customers | orderByString:'name'" [value]="customer">
+            {{customer.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field color="primary" *ngIf="filtersForm.controls.creationDateStart.value === ''">
+        <input
+          matInput
+          id="creationDateStart"
+          [matDatepicker]="creationDateStartPicker"
+          placeholder="Creation date start"
+          i18n-placeholder="@@creationDateStart"
+          (dateChange)="onApplyNewFilter($event)"
+          formControlName="creationDateStart"
+        >
+        <mat-datepicker-toggle matSuffix [for]="creationDateStartPicker"></mat-datepicker-toggle>
+        <mat-datepicker #creationDateStartPicker color="primary" disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field color="primary" *ngIf="filtersForm.controls.creationDateEnd.value === ''">
+        <input
+          matInput
+          id="creationDateEnd"
+          [matDatepicker]="creationDateEndPicker"
+          placeholder="Creation date end"
+          i18n-placeholder="@@creationDateEnd"
+          (dateChange)="onApplyNewFilter($event)"
+          formControlName="creationDateEnd"
+        >
+        <mat-datepicker-toggle matSuffix [for]="creationDateEndPicker"></mat-datepicker-toggle>
+        <mat-datepicker #creationDateEndPicker color="primary" disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="filtersForm.controls.customerAccountManager.value === ''">
+        <mat-label i18n="@@customerAccountManager">Customer account manager</mat-label>
+        <mat-select
+          id="customerAccountManager"
+          formControlName="customerAccountManager"
+          placeholder="Customer account manager"
+          i18n-placeholder="@@customerAccountManager"
+          (selectionChange)="onApplyNewFilter($event)"
+        >
+          <mat-option *ngFor="let customerAccountManager of customerAccountManagers | orderByString:'fullname'" [value]="customerAccountManager">
+            {{customerAccountManager.fullname}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="filtersForm.controls.customerAccountManagerSite.value === ''">
+        <mat-label i18n="@@customerAccountManagerSite">Customer account manager site</mat-label>
+        <mat-select
+          id="customerAccountManagerSite"
+          formControlName="customerAccountManagerSite"
+          placeholder="Customer account manager site"
+          i18n-placeholder="@@customerAccountManagerSite"
+          (selectionChange)="onApplyNewFilter($event)"
+        >
+          <mat-option *ngFor="let customerAccountManagerSite of sites | orderByString:'name'" [value]="customerAccountManagerSite">
+            {{customerAccountManagerSite.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="filtersForm.controls.status.value === ''">
+        <mat-label i18n="@@status">Status</mat-label>
+        <mat-select
+          id="status"
+          formControlName="status"
+          placeholder="Status"
+          i18n-placeholder="@@status"
+          (selectionChange)="onApplyNewFilter($event)"
+        >
+          <mat-option *ngFor="let status of customerOfferStatus | orderByString:'description'" [value]="status">
+            {{status.description}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="content"
+       infiniteScroll
+       [infiniteScrollDistance]="1"
+       (scrolled)="onScrollDown()"
+       [scrollWindow]="false">
+    <mat-list>
+      <ng-container *ngFor="let offer of filteredCustomerOffers; let collaboratorIndex = index">
+        <mat-list-item
+          matRipple
+          (click)="onClickCustomerOffer(offer, collaboratorIndex)"
+          [ngStyle]="{'background-color': collaboratorIndex === activeOfferIndex ? 'rgba(0, 0, 0, 0.10)' : null}">
+          <div>
+            <h4 mat-line>{{ offer.customerSite.customer.name }}</h4>
+            <p mat-line>{{ offer.requester }}</p>
+            <p mat-line>{{ offer.jobTitle }}</p>
+            <p mat-line><i>Created on {{ offer.creationDate | date:"dd/MM/yyyy" }}</i></p>
+          </div>
+        </mat-list-item>
+      </ng-container>
+    </mat-list>
+
+    <div
+      *ngIf="filteredCustomerOffers?.length === 0"
+      class="no-data"
+      i18n="@@NoOfferFound">No offer found
+    </div>
+
+  </div>
+
+</form>
+
+<button mat-fab class="bottom-right-absolute-button" color="primary" aria-label="Add an offer"
+        (click)="onClickAddCustomerOffer()"
+        *ngIf="tokenService.hasOneOfRoles(['MATCH_CAM'])">
+  <mat-icon>add</mat-icon>
+</button>

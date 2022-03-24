@@ -1,0 +1,29 @@
+<div [hidden]="!HTTPActivity && !RoutingActivity" class="loader">
+    <div class="preloader color"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+</div>
+
+<div [hidden]="ConnectionStatus" class="network-status-indicator">
+  <span i18n="@@offline">Offline</span>
+</div>
+
+<div class="full-page">
+  <nav>
+    <app-menu (toggleSideMenu)="$event ? sidenav.close() : sidenav.toggle()"></app-menu>
+  </nav>
+
+  <mat-sidenav-container class="side-menu-container">
+    <mat-sidenav class="side-menu" #sidenav mode="over">
+      <app-side-menu (askForClose)="sidenav.close()"></app-side-menu>
+    </mat-sidenav>
+
+    <mat-sidenav-content
+      infiniteScroll
+      [infiniteScrollDistance]="1"
+      (scrolled)="onScrollDown()"
+      [scrollWindow]="false">
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

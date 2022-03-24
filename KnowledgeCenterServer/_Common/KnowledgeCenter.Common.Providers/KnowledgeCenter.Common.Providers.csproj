@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\_CommonServices\KnowledgeCenter.CommonServices.Contracts\KnowledgeCenter.CommonServices.Contracts.csproj" />
+    <ProjectReference Include="..\..\_CommonServices\KnowledgeCenter.CommonServices\KnowledgeCenter.CommonServices.csproj" />
+    <ProjectReference Include="..\KnowledgeCenter.Common.Contracts\KnowledgeCenter.Common.Contracts.csproj" />
+    <ProjectReference Include="..\..\KnowledgeCenter.Common\KnowledgeCenter.Common.csproj" />
+    <ProjectReference Include="..\..\KnowledgeCenter.DataConnector\KnowledgeCenter.DataConnector.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Security\LoginProvider.cs" />
+    <Compile Remove="_Interfaces\ILoginProvider.cs" />
+  </ItemGroup>
+
+</Project>

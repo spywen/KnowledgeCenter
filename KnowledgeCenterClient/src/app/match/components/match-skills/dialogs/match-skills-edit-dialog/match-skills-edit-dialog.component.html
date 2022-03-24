@@ -1,0 +1,30 @@
+<div class="container">
+  <h1 mat-dialog-title i18n="@@updateAgency">Update {{data.name}}</h1>
+  <div mat-dialog-content class="form-container">
+    <form [formGroup]="skillForm">
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Name"
+          i18n-placeholder="@@agencyName"
+          formControlName="name"
+          maxlength="50"
+          required
+        />
+        <mat-error *ngIf="formControls('name').errors?.required" i18n="@@mandatory">This field is mandatory</mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="false" i18n="@@cancel">CANCEL</button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="!skillForm.valid"
+      (click)="onUpdateClick()"
+      i18n="@@update">
+      UPDATE
+    </button>
+  </div>
+</div>
